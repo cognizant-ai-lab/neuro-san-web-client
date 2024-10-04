@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Agent Web Client</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.6.2/css/bootstrap.min.css"
+    />
+
+    <!-- Font Awesome CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+    <!-- Marked.js and DOMPurify -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js"></script>
+
+    <!-- Socket.IO -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
+</head>
+<body>
+
+    <!-- Page Title with Subtitle -->
+    <header class="bg-primary text-white text-center py-3">
+        <h1>Agent Web Client</h1>
+        <h5 class="mt-2">Powered by Neuro AI</h5> <!-- Subtitle -->
+    </header>
+
+    <!-- Main Container -->
+    <div class="container-fluid d-flex flex-column p-0" style="height: calc(100vh - 56px);">
+
+        <!-- Chat Window -->
+        <div id="chat-window" class="flex-grow-1 overflow-auto p-3 bg-white">
+            <div id="messages" class="p-3" style="height: 100%; overflow-y: auto;">
+                <!-- Messages will be appended here -->
+            </div>
+            <div id="loading-indicator" class="text-center" style="display: none; margin-bottom: 10px;">
+                <div class="spinner-border text-primary" role="status"></div>
+                <span>Assistant is typing...</span>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-group p-3 bg-light" style="max-width: 900px; margin: 0 auto;">
+            <textarea id="user-input" class="form-control" placeholder="Type your message here..." rows="2"></textarea>
+            <div class="input-group-append">
+                <button id="send-button" class="btn btn-primary" type="button">
+                    <i class="fas fa-paper-plane"></i> Send
+                </button>
+            </div>
+        </div>
+
+        <!-- Agent Logs -->
+        <div id="logs" class="p-3 bg-light">
+            <h2>Agent Thinking</h2>
+            <div class="border rounded p-3 bg-white" style="height: 150px; overflow-y: auto;">
+                <pre id="agent-logs" class="mb-0"></pre>
+            </div>
+            <!-- Configuration Form (Collapsible) -->
+            <div class="card mb-0">
+    <!--            <div class="card-header">-->
+    <!--                <a class="collapsed card-link" data-toggle="collapse" href="#configForm" aria-expanded="false" aria-controls="configForm">-->
+    <!--                    Configuration <span class="ml-2">&#x25BC;</span>-->
+    <!--                </a>-->
+    <!--            </div>-->
+                <div id="configForm" class="collapse">
+                    <div class="card-body">
+                        <form method="POST" action="/">
+                            <div class="form-row">
+    <!--                            <div class="form-group col-md-4">-->
+    <!--                                <label for="host">Host</label>-->
+    <!--                                <input type="text" class="form-control" name="host" value="{{ config.get('host', '') }}">-->
+    <!--                            </div>-->
+    <!--                            <div class="form-group col-md-4">-->
+    <!--                                <label for="port">Port</label>-->
+    <!--                                <input type="number" class="form-control" name="port" value="{{ config.get('port', '') }}">-->
+    <!--                            </div>-->
+                                <div class="form-group col-md-4">
+                                    <label for="agent_name">Agent Network Name: </label>
+                                    <input type="text" class="form-control" name="agent_name" value="{{ agent_name }}">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save"></i> Update
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.6.2/js/bootstrap.bundle.min.js"
+    ></script>
+
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+
+</body>
+</html>
