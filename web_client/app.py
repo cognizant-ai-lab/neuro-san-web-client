@@ -61,10 +61,10 @@ def handle_user_input(data):
     with user_sessions_lock:
         user_data = user_sessions.get(sid)
         if not user_data:
-            # Initialize user data
-            host = DEFAULT_CONFIG['host']
-            port = str(DEFAULT_CONFIG['port'])
-            agent_name = DEFAULT_CONFIG['agent_name']
+            # Use the current session values for agent configuration
+            host = session.get('host', DEFAULT_CONFIG['host'])
+            port = session.get('port', DEFAULT_CONFIG['port'])
+            agent_name = session.get('agent_name', DEFAULT_CONFIG['agent_name'])
             agent_session = ServiceAgentSession(
                 host=host,
                 port=port,
@@ -78,7 +78,12 @@ def handle_user_input(data):
             }
             user_sessions[sid] = user_data
         else:
+            # Update the agent session if configuration has changed
             agent_session = user_data['agent_session']
+            current_agent_name = session.get('agent_name', DEFAULT_CONFIG['agent_name'])
+            if agent_session.agent_name != current_agent_name:
+                agent_session.agent_name = current_agent_name
+
             session_id = user_data['session_id']
 
     chat_request = {
