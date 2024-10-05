@@ -42,8 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to render text with newlines properly
     function renderTextWithNewlines(text) {
         // Replace \n with <br> for new lines
-//        return text.replace(/\n/g, '<br>');
-        return text.replace("\n", '<br>');
+        return text.replace(/\\n/g, '<br>');
     }
 
      function appendMessage(type, message) {
