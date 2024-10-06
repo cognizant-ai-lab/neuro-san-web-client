@@ -231,9 +231,16 @@ form button[type="submit"] {
     margin-top: 10px;
 }
 footer {
+    position: fixed; /* Fix the footer to the bottom */
+    bottom: 0;
+    right: 10px;
     font-size: 0.7rem;
-    color: #666; /* Subtle color for copyright text */
+    color: #666;
+    z-index: 100;
+    background-color: transparent;
+    white-space: nowrap; /* Prevent wrapping */
 }
+
 details {
     background-color: #ffffff; /* Set background to white */
     border: 1px solid #ccc; /* Add a subtle border */
