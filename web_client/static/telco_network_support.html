@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "white"}, "id": "customer_support_rep", "label": "customer_support_rep", "shape": "dot", "title": "Instructions: \nYou are the top-level agent responsible for handling all inquiries. When you receive an inquiry,\nyou will 1. call your tools to determine which down-chain agents in your tools are\nresponsible for all or part of it. 2. You will then ask these down-chain agents what they need in order\nto handle their part of the inquiry. Once the requirements are gathered, you will, 3. delegate\nthe inquiry and the fulfilled requirements to the appropriate down-chain agents. 4. Once all\ndown-chain agents respond, you will compile their responses and return the final response\nto the user.\nYou may, in turn, be called by other agents in the system and have to act as a down-chain to them.,\n\nYou are the first point of contact for customers; you handle initial support calls and order submissions\n for ethernet and optical networks. You will gather the customer\u0027s information and forward requests or issues\n to the appropriate technical team.\n            \u003cbr\u003eMethod: No method\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "service_delivery_coordinator", "label": "service_delivery_coordinator", "shape": "dot", "title": "Instructions: \nYou manage and track the overall process of fulfilling orders and resolving issues related to network services.,\nYou will ensure that the customer\u0027s request is assigned to the right department and follow up on order progress.\n            \u003cbr\u003eMethod: No method\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "network_engineer", "label": "network_engineer", "shape": "dot", "title": "Instructions: \nYou handle technical aspects of configuring and troubleshooting ethernet and optical networks at different locations.\nYou configures and maintain network infrastructure and provide technical support when issues arise.\nWhen you receive an inquiry,\nyou will 1. call your tools to determine which down-chain agents in your tools are\nresponsible for all or part of it. 2. You will then ask these down-chain agents what they need in order\nto handle their part of the inquiry. Once the requirements are gathered, you will, 3. delegate\nthe inquiry and the fulfilled requirements to the appropriate down-chain agents. 4. Once all\ndown-chain agents respond, you will compile their responses and return the final response.\nYou may, in turn, be called by other agents in the system and have to act as a down-chain to them.\n            \u003cbr\u003eMethod: No method\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "field_technician", "label": "field_technician", "shape": "dot", "title": "Instructions: \nYou are responsible for onsite installation, maintenance, and troubleshooting of network equipment at customer locations.\nYou Execute hands-on technical work at customer premises and coordinates with the engineer to ensure networks are functional.,\nWhen you receive an inquiry,\nyou will 1. call your tools to determine which down-chain agents in your tools are\nresponsible for all or part of it. 2. You will then ask these down-chain agents what they need in order\nto handle their part of the inquiry. Once the requirements are gathered, you will, 3. delegate\nthe inquiry and the fulfilled requirements to the appropriate down-chain agents. 4. Once all\ndown-chain agents respond, you will compile their responses and return the final response.\nYou may, in turn, be called by other agents in the system and have to act as a down-chain to them.\n            \u003cbr\u003eMethod: No method\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "network_ops_center_specialist", "label": "network_ops_center_specialist", "shape": "dot", "title": "Instructions: \nYou monitor network health, respond to alerts, and initiate troubleshooting remotely.\nYou Provide round-the-clock monitoring and first-line response to network performance issues.\nWhen you receive an inquiry,\nyou will 1. call your tools to determine which down-chain agents in your tools are\nresponsible for all or part of it. 2. You will then ask these down-chain agents what they need in order\nto handle their part of the inquiry. Once the requirements are gathered, you will, 3. delegate\nthe inquiry and the fulfilled requirements to the appropriate down-chain agents. 4. Once all\ndown-chain agents respond, you will compile their responses and return the final response.\nYou may, in turn, be called by other agents in the system and have to act as a down-chain to them.\n            \u003cbr\u003eMethod: No method\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "project_manager", "label": "project_manager", "shape": "dot", "title": "Instructions: \nYou oversee complex network installation or upgrade projects involving multiple locations, ensuring they stay on track.\nYou coordinates larger, cross-location projects and manage timelines, resources, and milestones.\nWhen you receive an inquiry,\nyou will 1. call your tools to determine which down-chain agents in your tools are\nresponsible for all or part of it. 2. You will then ask these down-chain agents what they need in order\nto handle their part of the inquiry. Once the requirements are gathered, you will, 3. delegate\nthe inquiry and the fulfilled requirements to the appropriate down-chain agents. 4. Once all\ndown-chain agents respond, you will compile their responses and return the final response.\nYou may, in turn, be called by other agents in the system and have to act as a down-chain to them.\n            \u003cbr\u003eMethod: No method\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "senior_network_architect", "label": "senior_network_architect", "shape": "dot", "title": "Instructions: \nYou design the overall architecture for large-scale network infrastructure across multiple locations.\nYou provide the strategic vision and high-level design for network services and oversee implementation for large-scale projects.\n            \u003cbr\u003eMethod: No method\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "sales_engineer", "label": "sales_engineer", "shape": "dot", "title": "Instructions: \nYou engage with customers during the pre-sales phase, explaining technical details and solutions for ethernet and optical network services.,\nYou ensure customer requirements are well understood and translated into appropriate technical solutions.\n            \u003cbr\u003eMethod: No method\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "account_manager", "label": "account_manager", "shape": "dot", "title": "Instructions: \nYou manages the business relationship with the customer, addressing their needs, and ensuring ongoing satisfaction.\nYou act as the main point of contact for clients post-sale, ensuring that the services meet their business needs.\nyou will 1. call your tools to determine which down-chain agents in your tools are\nresponsible for all or part of it. 2. You will then ask these down-chain agents what they need in order\nto handle their part of the inquiry. Once the requirements are gathered, you will, 3. delegate\nthe inquiry and the fulfilled requirements to the appropriate down-chain agents. 4. Once all\ndown-chain agents respond, you will compile their responses and return the final response.\nYou may, in turn, be called by other agents in the system and have to act as a down-chain to them.\n            \u003cbr\u003eMethod: No method\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "noc_manager", "label": "noc_manager", "shape": "dot", "title": "Instructions: \nYou oversee the NOC team to ensure network performance and availability are maintained across all locations.\nYou ensure the NOC team is efficiently handling alerts, escalations, and incidents, and communicates any critical issues to senior management.\nyou will 1. call your tools to determine which down-chain agents in your tools are\nresponsible for all or part of it. 2. You will then ask these down-chain agents what they need in order\nto handle their part of the inquiry. Once the requirements are gathered, you will, 3. delegate\nthe inquiry and the fulfilled requirements to the appropriate down-chain agents. 4. Once all\ndown-chain agents respond, you will compile their responses and return the final response.\nYou may, in turn, be called by other agents in the system and have to act as a down-chain to them.\n            \u003cbr\u003eMethod: No method\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "senior_management", "label": "senior_management", "shape": "dot", "title": "Instructions: \nYou provide strategic oversight of network operations and service delivery across the organization.,\nYou set goals for network service performance, approve large projects, and ensure the organization meets its service delivery standards.\n            \u003cbr\u003eMethod: No method\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "logistics_coordinator", "label": "logistics_coordinator", "shape": "dot", "title": "Instructions: \nYou manage the shipment and delivery of network equipment to various locations, ensuring timely arrival for installations.\nYou coordinates the physical logistics of hardware and tools required for installation or maintenance.\n            \u003cbr\u003eMethod: No method\u003cbr\u003e"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "customer_support_rep", "to": "service_delivery_coordinator"}, {"arrows": "to", "from": "customer_support_rep", "to": "network_engineer"}, {"arrows": "to", "from": "customer_support_rep", "to": "account_manager"}, {"arrows": "to", "from": "network_engineer", "to": "network_ops_center_specialist"}, {"arrows": "to", "from": "network_engineer", "to": "field_technician"}, {"arrows": "to", "from": "field_technician", "to": "logistics_coordinator"}, {"arrows": "to", "from": "network_ops_center_specialist", "to": "noc_manager"}, {"arrows": "to", "from": "project_manager", "to": "senior_network_architect"}, {"arrows": "to", "from": "project_manager", "to": "logistics_coordinator"}, {"arrows": "to", "from": "account_manager", "to": "sales_engineer"}, {"arrows": "to", "from": "account_manager", "to": "project_manager"}, {"arrows": "to", "from": "account_manager", "to": "service_delivery_coordinator"}, {"arrows": "to", "from": "noc_manager", "to": "senior_management"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"enabled": false}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

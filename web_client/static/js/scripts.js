@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const messages = document.getElementById('messages');
     const agentLogs = document.getElementById('agent-logs');
     const loadingIndicator = document.getElementById('loading-indicator');
+    const configForm = document.querySelector('#configForm form');
+    const agentNameInput = configForm.querySelector('input[name="agent_name"]');
 
     sendButton.addEventListener('click', sendMessage);
 
@@ -66,4 +68,32 @@ document.addEventListener('DOMContentLoaded', () => {
         messages.scrollTop = messages.scrollHeight;
     }
 
+    function loadDiagram(agentNetworkName) {
+        const diagramFrame = document.getElementById('diagram-frame');
+        if (agentNetworkName) {
+            // Set the src attribute of the iframe to the respective agent network HTML file in the static folder
+            diagramFrame.src = `/static/${agentNetworkName}.html`;
+        } else {
+            diagramFrame.src = '';  // Clear the iframe if no agent network is specified
+        }
+    }
+
+    // On form submission, load the respective diagram
+    configForm.addEventListener('submit', (event) => {
+        event.preventDefault();  // Prevent default form submission behavior
+        const agentNetworkName = agentNameInput.value.trim();
+        loadDiagram(agentNetworkName);  // Load the corresponding diagram
+    });
+
+    // Optionally, you can load the diagram when the page loads, based on the current agent_name
+    const initialAgentName = agentNameInput.value.trim();
+    loadDiagram(initialAgentName);  // Load the initial diagram if there is an agent network name
+
 });
+
+window.addEventListener('resize', function() {
+    const diagramFrame = document.getElementById('diagram-frame');
+    // Trigger resizing or reloading the content if needed
+    diagramFrame.contentWindow.location.reload();  // Reloads the diagram when window is resized
+});
+

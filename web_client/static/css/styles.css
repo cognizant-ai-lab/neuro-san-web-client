@@ -251,3 +251,8 @@ details {
 details[open] {
     background-color: #ffffff; /* Ensure open details section stays white */
 }
+
+#mynetwork {
+    width: 100%;
+    height: 100%;
+}
