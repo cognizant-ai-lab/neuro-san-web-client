@@ -61,38 +61,34 @@
                 </button>
             </div>
         </div>
-
-        <!-- Agent Logs -->
-        <div id="logs" class="p-3 bg-light">
-            <h2>Agent Communications</h2>
+        <details>
+            <summary>
+                Agent Communications <span class="icon">👇</span>
+            </summary>
             <div class="border rounded p-3 bg-white" style="height: 150px; overflow-y: auto;">
                 <pre id="agent-logs" class="mb-0"></pre>
             </div>
-            <!-- Configuration Form (Collapsible) -->
-            <div class="card mb-0">
-                <div class="card-header">
-                    <a class="collapsed card-link" data-toggle="collapse" href="#configForm" aria-expanded="false" aria-controls="configForm">
-                        Configuration <span class="ml-2">&#x25BC;</span>
-                    </a>
-                </div>
-                <div id="configForm" class="collapse">
-                    <div class="card-body">
-                        <form method="POST" action="/">
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="agent_name">Agent Network Name:</label>
-                                    <input type="text" class="form-control" name="agent_name" value="{{ agent_name }}">
-                                </div>
+        </details>
+        <details>
+            <summary>
+                Configuration <span class="icon">👇</span>
+            </summary>
+            <div id="configForm">
+                <div class="card-body">
+                    <form method="POST" action="/">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="agent_name">Agent Network Name:</label>
+                                <input type="text" class="form-control" name="agent_name" value="{{ agent_name }}">
                             </div>
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-save"></i> Update
-                            </button>
-                        </form>
-                    </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Update
+                        </button>
+                    </form>
                 </div>
             </div>
-        </div>
-
+        </details>
     </div>
 
     <!-- jQuery and Bootstrap JS -->
