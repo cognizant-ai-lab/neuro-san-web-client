@@ -2,7 +2,7 @@
 
 /* Global body styling */
 body {
-    background-color: #f5f5f5;
+    background-color: #e0e0e0;
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
@@ -96,30 +96,41 @@ header h5 {
     background-color: #f8f9fa;
     border-top: 1px solid #ccc;
     padding: 10px;
+    display: flex;
+    flex-wrap: nowrap;
     width: 100%;
 }
 
 #user-input {
-    resize: none;
     border-radius: 25px 0 0 25px;
-    padding: 10px;
+    padding: 15px; /* Increase padding for better text input feel */
+    border: 1px solid #ccc; /* Add a border for a clean look */
+    transition: border-color 0.3s ease-in-out; /* Smooth transition for focus effect */
+    flex-grow: 1; /* Allow the input box to grow and fill the available space */
     width: 100%;
 }
 
 #user-input:focus {
+    border-color: #007bff; /* Change border color on focus */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.3); /* Subtle shadow on focus */
     outline: none;
-    box-shadow: none;
 }
 
 .input-group-append .btn {
+    background: url('NeuroAI.jpg') no-repeat center center; /* Use the image as the button background */
+    background-size: cover; /* Ensure the image covers the button */
+    color: white; /* Keep the text color white for readability */
+    font-weight: 600; /* Make the button text slightly bolder */
     border-radius: 0 25px 25px 0;
-    padding: 10px 20px; /* Add more padding */
-    font-size: 1rem; /* Increase font size */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+    padding: 10px 15px;
+    font-size: 0.8rem;
+    border: none;
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-.input-group .btn i {
-    margin-right: 8px; /* Slightly increase the margin */
+.input-group-append .btn:hover {
+    background-color: rgba(0, 0, 0, 0.5); /* Add a dark overlay on hover for better contrast */
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
 }
 
 /* Button styling */
@@ -198,7 +209,7 @@ header h5 {
 }
 
 summary {
-    font-size: 1.1rem;
+    font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
     padding: 10px;
@@ -209,4 +220,27 @@ summary {
 
 summary:hover {
     background-color: #e9ecef; /* Subtle color change on hover */
+}
+form label[for="agent_name"] {
+    font-size: 0.8rem;
+    padding-left: 10px;
+}
+form button[type="submit"] {
+    font-size: 0.8rem;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+footer {
+    font-size: 0.7rem;
+    color: #666; /* Subtle color for copyright text */
+}
+details {
+    background-color: #ffffff; /* Set background to white */
+    border: 1px solid #ccc; /* Add a subtle border */
+    border-radius: 5px; /* Optional: rounded corners */
+    padding: 10px; /* Add padding for spacing */
+}
+
+details[open] {
+    background-color: #ffffff; /* Ensure open details section stays white */
 }
