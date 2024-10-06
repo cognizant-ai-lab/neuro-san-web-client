@@ -10,18 +10,32 @@ body {
 
 /* Styling for page header and subtitle */
 header {
-    background-color: #007bff;
+    background: url('NeuroAI.jpg') no-repeat center center; /* Replace with the actual image path */
+    background-size: cover; /* Ensure the image covers the entire header */
     color: white;
     text-align: center;
-    padding: 15px;
-    font-size: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
+    padding: 20px 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Keep the subtle shadow */
+}
+
+header h1, header h5 {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Add text shadow for readability over image */
 }
 
 header h5.subtitle {
     font-size: 1.2rem; /* Set font size for the subtitle */
     font-weight: 300; /* Lighter font weight for the subtitle */
     margin-top: -5px; /* Reduce space between title and subtitle */
+}
+header h1 {
+    font-size: 2rem; /* Increase font size for the title */
+    font-weight: 700; /* Make the title bold */
+}
+
+header h5 {
+    font-size: 1.3rem; /* Increase font size for the subtitle */
+    font-weight: 400; /* Keep subtitle lighter for contrast */
+    margin-top: 10px;
 }
 
 /* Chat window and message styling */
@@ -99,11 +113,13 @@ header h5.subtitle {
 
 .input-group-append .btn {
     border-radius: 0 25px 25px 0;
-    padding: 10px 15px;
+    padding: 10px 20px; /* Add more padding */
+    font-size: 1rem; /* Increase font size */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
 }
 
 .input-group .btn i {
-    margin-right: 5px;
+    margin-right: 8px; /* Slightly increase the margin */
 }
 
 /* Button styling */
@@ -173,4 +189,24 @@ header h5.subtitle {
     padding: 2px 4px;
     border-radius: 4px;
     font-family: monospace;
+}
+
+.input-group-append .btn:hover {
+    background-color: #0056b3; /* Darken the button on hover */
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Enhance shadow on hover */
+}
+
+summary {
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+}
+
+summary:hover {
+    background-color: #e9ecef; /* Subtle color change on hover */
 }
