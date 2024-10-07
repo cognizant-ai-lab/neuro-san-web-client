@@ -146,5 +146,35 @@
               }
               drawGraph();
         </script>
+    
+<script type="text/javascript">
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.agentName) {
+            const agentName = event.data.agentName;
+
+            console.log(`Received agent name: ${agentName}`);  // Log the received agent name
+
+            // Log all the node IDs to verify if there is a matching node
+            console.log('All node IDs:', nodes.get().map(node => node.id));
+
+            // Find the matching node (IDs should be lowercase)
+            const matchingNode = nodes.get().find(node => node.id.toLowerCase() === agentName);
+
+            if (matchingNode) {
+                console.log(`Matched node: ${matchingNode.id}`);  // Log the matched node ID
+
+                // Reset the color of all nodes
+                nodes.forEach(function(node) {
+                    nodes.update({ id: node.id, color: '#97c2fc' });
+                });
+
+                // Highlight the matched node
+                nodes.update({ id: matchingNode.id, color: '#ff6347' });
+            } else {
+                console.log(`No matching node found for: ${agentName}`);
+            }
+        }
+    });
+</script>
     </body>
 </html>

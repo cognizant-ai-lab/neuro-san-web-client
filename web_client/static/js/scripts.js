@@ -18,9 +18,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    function highlightAgentInGraph(agentName) {
+        const iframe = document.getElementById('diagram-frame');
+        if (iframe) {
+//            console.log(`Sending message to iframe: ${agentName}`);  // Log the agent name before sending
+            iframe.contentWindow.postMessage({ agentName: agentName }, '*');  // Do NOT modify the agentName here
+        }
+    }
+
     socket.on('agent_log', function(data) {
         agentLogs.textContent += data.log + '\n';
         agentLogs.scrollTop = agentLogs.scrollHeight;
+
+        // Extract the full agent name before "CALLED" or "RETURNED" using a more precise regex
+        const log = data.log;
+        const agentRegex = /([A-Za-z_]+) (?:CALLED|RETURNED)/;  // Regex to match agent names before "CALLED" or "RETURNED"
+        const match = log.match(agentRegex);
+
+        if (match && match[1]) {
+            const agentName = match[1].toLowerCase();  // Only lowercase the agent name
+//            console.log(`Extracted agent name: ${agentName}`);  // Debugging log to check the extracted agent name
+            highlightAgentInGraph(agentName);  // Send the agent name to be highlighted
+        }
     });
 
     socket.on('agent_response', function(data) {

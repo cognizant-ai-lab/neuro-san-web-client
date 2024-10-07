@@ -146,5 +146,26 @@
               }
               drawGraph();
         </script>
+    
+<script type="text/javascript">
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.agentName) {
+            const agentName = event.data.agentName;
+
+            // Directly compare the lowercase agent name with the node ID
+            const matchingNode = nodes.get().find(node => node.id.toLowerCase() === agentName);
+
+            if (matchingNode) {
+                // Reset the color of all nodes to default
+                nodes.forEach(function(node) {
+                    nodes.update({ id: node.id, color: '#97c2fc' });
+                });
+
+                // Highlight the matched node
+                nodes.update({ id: matchingNode.id, color: '#ff6347' });
+            }
+        }
+    });
+</script>
     </body>
 </html>
