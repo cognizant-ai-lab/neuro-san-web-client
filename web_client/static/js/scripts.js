@@ -97,3 +97,5 @@ window.addEventListener('resize', function() {
     diagramFrame.contentWindow.location.reload();  // Reloads the diagram when window is resized
 });
 
+
+
