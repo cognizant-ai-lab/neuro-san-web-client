@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // On form submission, load the respective diagram
     configForm.addEventListener('submit', (event) => {
-        event.preventDefault();  // Prevent default form submission behavior
+//        event.preventDefault();  // Prevent default form submission behavior
         const agentNetworkName = agentNameInput.value.trim();
         loadDiagram(agentNetworkName);  // Load the corresponding diagram
     });

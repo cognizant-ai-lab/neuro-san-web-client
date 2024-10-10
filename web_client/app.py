@@ -78,12 +78,7 @@ def handle_user_input(data):
             }
             user_sessions[sid] = user_data
         else:
-            # Update the agent session if configuration has changed
             agent_session = user_data['agent_session']
-            current_agent_name = session.get('agent_name', DEFAULT_CONFIG['agent_name'])
-            if agent_session.agent_name != current_agent_name:
-                agent_session.agent_name = current_agent_name
-
             session_id = user_data['session_id']
 
     chat_request = {
