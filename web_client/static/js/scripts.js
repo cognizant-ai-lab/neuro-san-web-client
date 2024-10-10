@@ -140,5 +140,27 @@ window.addEventListener('resize', function() {
     diagramFrame.contentWindow.location.reload();  // Reloads the diagram when window is resized
 });
 
+function resizeDiagramFrame() {
+    const diagramFrame = document.getElementById('diagram-frame');
+    if (diagramFrame) {
+        diagramFrame.contentWindow.location.reload();  // Trigger a reload to adjust layout
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const diagramDetails = document.querySelector('details[open]'); // If it's open on page load
+    if (diagramDetails) {
+        resizeDiagramFrame();  // Resize on load if the diagram is visible
+    }
+});
+
+const detailsElements = document.querySelectorAll('details');
+detailsElements.forEach((details) => {
+    details.addEventListener('toggle', function() {
+        if (details.open) {
+            resizeDiagramFrame();  // Resize when the diagram becomes visible
+        }
+    });
+});
 
 
