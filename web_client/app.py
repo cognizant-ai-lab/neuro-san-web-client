@@ -45,7 +45,10 @@ def index():
         session['agent_name'] = request.form.get('agent_name', DEFAULT_CONFIG['agent_name'])
         # Initialize agent session with new config
         session['agent_session'] = None
-    return render_template('index.html', agent_name=session.get('agent_name', DEFAULT_CONFIG['agent_name']))
+    return render_template('index.html',
+                           agent_name=session.get('agent_name', DEFAULT_CONFIG['agent_name']),
+                           host=session.get('host', DEFAULT_CONFIG['host']),
+                           port=session.get('port', DEFAULT_CONFIG['port']))
 
 
 # noinspection PyUnresolvedReferences

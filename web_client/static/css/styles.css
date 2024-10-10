@@ -225,6 +225,14 @@ form label[for="agent_name"] {
     font-size: 0.8rem;
     padding-left: 10px;
 }
+form label[for="host"] {
+    font-size: 0.8rem;
+    padding-left: 10px;
+}
+form label[for="port"] {
+    font-size: 0.8rem;
+    padding-left: 10px;
+}
 form button[type="submit"] {
     font-size: 0.8rem;
     margin-left: 10px;

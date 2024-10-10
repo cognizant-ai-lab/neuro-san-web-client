@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingIndicator = document.getElementById('loading-indicator');
     const configForm = document.querySelector('#configForm form');
     const agentNameInput = configForm.querySelector('input[name="agent_name"]');
+    const hostInput = configForm.querySelector('input[name="host"]');
+    const portInput = configForm.querySelector('input[name="port"]');
 
     sendButton.addEventListener('click', sendMessage);
 
