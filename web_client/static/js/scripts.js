@@ -87,19 +87,43 @@ document.addEventListener('DOMContentLoaded', () => {
         messages.scrollTop = messages.scrollHeight;
     }
 
-    function loadDiagram(agentNetworkName) {
-        const diagramFrame = document.getElementById('diagram-frame');
-        if (agentNetworkName) {
-            // Set the src attribute of the iframe to the respective agent network HTML file in the static folder
-            diagramFrame.src = `/static/${agentNetworkName}.html`;
-        } else {
-            diagramFrame.src = '';  // Clear the iframe if no agent network is specified
+    const detailsElement = document.querySelector('details');
+    const diagramFrame = document.getElementById('diagram-frame');
+    let centered = false;  // Flag to track if the diagram has been centered
+
+    // Listen for the toggle event when details is opened
+    detailsElement.addEventListener('toggle', function() {
+        if (this.open && !centered) {
+            // Trigger re-centering logic after details is opened, but only if not centered already
+            triggerResizeEvent();
+            centered = true;  // Set flag to true to prevent further centering
         }
+    });
+
+    function triggerResizeEvent() {
+        setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));  // Trigger a resize event after details opens
+        }, 100);  // Delay ensures that the content is fully rendered before triggering the resize
     }
 
+    // On iframe load, also trigger re-centering if details is already open
+    diagramFrame.onload = function() {
+        if (detailsElement.open && !centered) {
+            triggerResizeEvent();
+            centered = true;  // Set flag to true to prevent further centering
+        }
+    };
+
+    function loadDiagram(agentNetworkName) {
+        centered = false;  // Reset the flag when loading a new diagram
+        if (agentNetworkName) {
+            diagramFrame.src = `/static/${agentNetworkName}.html`;
+        } else {
+            diagramFrame.src = '';  // Clear iframe
+        }
+    }
     // On form submission, load the respective diagram
     configForm.addEventListener('submit', (event) => {
-//        event.preventDefault();  // Prevent default form submission behavior
         const agentNetworkName = agentNameInput.value.trim();
         loadDiagram(agentNetworkName);  // Load the corresponding diagram
     });
