@@ -1,0 +1,171 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    
+        <style>
+          #mynetwork {
+              width: 100%;
+              background-color: #222222;
+              border: 1px solid lightgray;
+              position: relative;
+          }
+        
+          body, html {
+              margin: 0;
+              padding: 0;
+              overflow: hidden;  /* Prevent scrollbars in the iframe */
+              width: 100%;
+              height: 100%;
+          }
+        
+          .vis-network {
+              display: flex;
+              justify-content: center;  /* Center horizontally */
+              align-items: center;      /* Center vertically */
+          }
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "white"}, "id": "opportunity_finder_process_manager", "label": "opportunity_finder_process_manager", "shape": "dot", "title": "Instructions: \nYou are a manager of a process that takes several steps to complete.\n\nYou will be given the results of an Opportunity Finder agent which\ndiscovers opportunities for improvement of one aspect of an organization.\nIts output will describe a code snippet for generating a synthetic data set\nto create the contexts, actions and outcome variables that will be used\nfor the optimization.  Within that code snippet will be comments\nthat describe various aspects of the problem.\n\nYou will use several tools to compose a single final JSON dictionary as output.\nas described in the last step of the process.\nThere will be no elaboration or additional commentary.\nIn order to compose this output, you will need to complete several steps of\na process in a prescribed order and you will need to wait for the output\nof earlier steps in the process in order to complete later steps.\nTake the steps of the process in this order:\n\n1.  Pass any problem description comments, and data field description comments\n    from the Opportunity Finder result text to the project_describer tool.\n    This tool\u0027s output will be a JSON dictionary with fields containing text descriptions\n    of the project.  The resulting dictionary mapping of this tool will be known as \"project_info\".\n\n2.  Find the synthetic data generator code in the Opportunity Finder results\n    and pass that bit of Python code into the synthetic_data_generator tool.\n    This code must be passed verbatim and in its entirety.\n    Take special care to preserve all formatting of data generator code,\n    keeping all white spaces and text indentation in the original form.\n    You will also need to send that tool an appropriate project name from the project_info.\n    The output of this tool will be a URL string that will be known as \u0027data_url\u0027.\n\n3.  Pass the \u0027data_url\u0027 as an argument to the data_profiler tool. This tool\u0027s output will be\n    a JSON dictionary characterization of the data file\u0027s data contents.\n\n4.  Use the information from the Opportunity Finder result code snippet,\n    including comments variable names and code placement cues,\n    along with the data_profiler tool\u0027s JSON dictionary output value for the \"headers\" key\n    to the cao_mapper tool.\n    This tool\u0027s output will also be a JSON dictionary with lists of context, action, and outcome\n    fields from the data_profiler tool\u0027s output.\n\n5.  Pass any problem description comments, and data field description comments\n    along with the JSON dictionary output of the data_profiler tool to the field_describer tool.\n    This tool\u0027s output will be a JSON dictionary mapping of field name to a single\n    string description of each field, where each field name key comes from each field\n    described in the the data_profiler JSON output and the field description value\n    comes from the original Opportunity Finder result text.  The resultant dictionary mapping\n    will be known as \"field_descriptions\".\n\n6.  Use the experiment_controller tool to assess optimal parameter settings.\n    Pass to this tool these pieces of information as mentioned earlier:\n        \"cao_mapping\" - the value will be the results of the cao_mapping dictionary created earlier.\n        \"field_descriptions\" - the value will be the field_descriptions dictionary created earlier.\n        \"project_info\" - the value will be the project_info dictionary created earlier.\n    This tool\u0027s output will be a JSON dictionary known as \"experiment_settings\".\n\n7.  Use the experiment_creation tool to create an experiment.\n    Pass to this tool these pieces of the \"experiment_creation_info\" argument as a dictionary\n    with the following keys:\n        \"data_url\" - the value will be the synthetic data URL previously generated by the synthetic_data_generator tool.\n        \"cao_mapping\" - the value will be the results of the cao_mapping dictionary created earlier.\n        \"field_descriptions\" - the value will be the field_descriptions dictionary created earlier.\n        \"project_info\" - the value will be the project_info dictionary created earlier.\n        \"experiment_settings\" - the value will be the experiment_settings dictionary created earlier.\n        \"data_profile\" - the value will be the JSON dictionary from the data_profiler tool.\n    This tool\u0027s output will be a JSON dictionary with experiment information\n    that will be known as \"experiment_info\". This dictionary will contain keys for a\n    \"project_id\" and an \"experiment_id\".\n\n8. Return either:\n    a)  the output of the \"experiment_info\" dictionary from the experiment_creation tool\n        as a JSON dictionary   or\n    b)  If there was an error, return a JSON structure with the following key/value pairs:\n        \"error\" - an unadulterated description of the error message as handed up by the failing tool.\n        \"tool\" - the name of the tool that gave the error.\n        \"traceback\" - any traceback/stack trace information that accompanies the error.\n        Specifically, do not make up an experiment_info dictionary in the case of an error.\n\u003cbr\u003eClass: No class\u003cbr\u003eCommand: No command\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "synthetic_data_generator", "label": "synthetic_data_generator", "shape": "dot", "title": "Instructions: No instructions\u003cbr\u003eClass: data_generator_service_tool.DataGeneratorServiceTool\u003cbr\u003eCommand: Create the synthetic data file and return its URL or return error message if data file generation fails.\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "data_profiler", "label": "data_profiler", "shape": "dot", "title": "Instructions: No instructions\u003cbr\u003eClass: data_profiler_service_tool.DataProfilerServiceTool\u003cbr\u003eCommand: No command\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "cao_mapper", "label": "cao_mapper", "shape": "dot", "title": "Instructions: \nYou are an expert in analyzing descriptions of optimization projects.\nYou will receive a list of header/column names that would be found in a csv data file\nthat would be associated with the project as well as a\nrichly commented code snippet that generates the data for the csv file.\nFor each header/column name in the list, you will identify from the code snippet comments,\nwhich of the following it best corresponds to:\n    * A context attribute of the problem -- some background measurement that cannot be changed.\n    * An action attribute of the problem -- some action that can make a difference in the optimization.\n    * An outcome attribute of the problem -- some result of the action that can be measured and optimized.\nAll of the information to determine whether a field is a context, action, or outcome will\ncome from the code comments. Context, action, outcome information about the fields is very likely to come\nin how the fields are grouped within the code itself.\nDo not attempt to embellish on such a classification beyond the information you are given.\nIf you cannot make a determination of context, action, or outcome\nbased on the code comments alone, give up with the message:\n    \"Error: Could not determine CAO for field \u003cfield_name\u003e\".\nYour regular output will be a JSON dictionary mapping with the following keys:\n    \"context\" - a list of header/column names which are identified as the context in the problem description.\n    \"actions\" - a list of header/column names which are identified as actions in the problem description.\n    \"outcomes\" - a list of header/column names which are identified as outcomes in the problem description.\nThere will be no elaboration or additional commentary.\n\u003cbr\u003eClass: No class\u003cbr\u003eCommand: \nProvide the JSON dictionary that describes the sorting of the\nheader columns into context, actions and outcomes, or an error if any one designation\ncannot be determined by input alone.\n\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "field_describer", "label": "field_describer", "shape": "dot", "title": "Instructions: \nYou are an expert in analyzing descriptions of optimization projects.\nYou will receive a problem description of the optimization project\nand a list of header/column names that would be found in a csv data file\nthat would be associated with the project.\nFor each header/column name in the list, you will identify from the problem\ndescription a terse, but informative description of what the data in the column describes or means.\nYour output will be a JSON dictionary mapping where each key is a header/column name\nand its corresponding value will be a description of the data.\nThere will be no elaboration or additional commentary.\n\u003cbr\u003eClass: No class\u003cbr\u003eCommand: Provide the JSON dictionary that describes each header/column name.\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "project_describer", "label": "project_describer", "shape": "dot", "title": "Instructions: \nYou are an expert in analyzing descriptions of optimization projects.\nYou will receive a problem description of the optimization project.\nFormat your output as a JSON dictionary with the following keys:\n    \"name\" - a title that summarizes the project in a few short words.\n        Do not use terms like \"optimization\", \"scenario\", \"simulation\" or \"dataset\",\n        as these are redundant given the purpose of this field.\n    \"description\" - a brief two sentence summary of what the project is trying to accomplish.\n        This description should not be a simple regurgitation of the input, nor should it\n        be a description of how the results will be accomplished. Rather, it should be\n        more like an executive summary in that there should be no code snippets or\n        details about action or context variables, no implementation details,\n        no mention of synthetic data sets.\n\u003cbr\u003eClass: No class\u003cbr\u003eCommand: Provide the JSON dictionary that provides a name and description for project.\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "experiment_controller", "label": "experiment_controller", "shape": "dot", "title": "Instructions: \nYou are an expert in analyzing descriptions of optimization projects\nand turning that into settings for optimization experiments.\nYou will receive the following:\n    1.  a cao_mapping dictionary categorizing data fields of the optimization project.\n        This is a dicitonary whose 3 keys will be \"context\" \"actions\" or \"outcomes\".\n        Each dictionary contains a list of string field names corresponding\n        to each group.\n    2.  a field_descriptions dictionary whose keys are names for each of the data fields\n        and whose values are textual descriptions of the data contained in the field.\n    3.  a project_info dictionary which contains name and description of the project\n\nFormat your output as a JSON dictionary with the following keys:\n    \"maximize\" - This will be a JSON dictionary whose keys are each and every\n        data field categorized as an outcome.  For each outcome, you will look\n        at its corresponding field description and the information in the\n        project_info to determine how best to optimize this field\u0027s value\n        given the goals of the project. Assign a boolean true value if the\n        particular outcome should be maximized, or a boolean false value if\n        the particular outcome should be minimized.\n\u003cbr\u003eClass: No class\u003cbr\u003eCommand: Provide the JSON dictionary that provides the experiment setting\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "experiment_creation", "label": "experiment_creation", "shape": "dot", "title": "Instructions: No instructions\u003cbr\u003eClass: experiment_creation_service_tool.ExperimentCreationServiceTool\u003cbr\u003eCommand: No command\u003cbr\u003e"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "opportunity_finder_process_manager", "to": "synthetic_data_generator"}, {"arrows": "to", "from": "opportunity_finder_process_manager", "to": "data_profiler"}, {"arrows": "to", "from": "opportunity_finder_process_manager", "to": "cao_mapper"}, {"arrows": "to", "from": "opportunity_finder_process_manager", "to": "project_describer"}, {"arrows": "to", "from": "opportunity_finder_process_manager", "to": "field_describer"}, {"arrows": "to", "from": "opportunity_finder_process_manager", "to": "experiment_controller"}, {"arrows": "to", "from": "opportunity_finder_process_manager", "to": "experiment_creation"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"enabled": false}, "interaction": {"zoomView": false, "dragView": true}, "manipulation": {"enabled": false}, "autoResize": true};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+<script type="text/javascript">
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.agentName) {
+            const agentName = event.data.agentName;
+
+            // Directly compare the lowercase agent name with the node ID
+            const matchingNode = nodes.get().find(node => node.id.toLowerCase() === agentName);
+
+            if (matchingNode) {
+                // Reset the color of all nodes to default
+                nodes.forEach(function(node) {
+                    nodes.update({ id: node.id, color: '#97c2fc' });
+                });
+
+                // Highlight the matched node
+                nodes.update({ id: matchingNode.id, color: '#ff6347' });
+            }
+        }
+    });
+</script>
+    </body>
+</html>
