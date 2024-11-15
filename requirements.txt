@@ -1,3 +1,7 @@
+# Flask
+Flask==3.0.3
+Flask-SocketIO==5.4.1
+
 # These are needed for generating code from .proto files
 grpcio==1.62.0
 grpcio-health-checking==1.62.0
