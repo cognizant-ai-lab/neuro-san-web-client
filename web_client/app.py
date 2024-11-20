@@ -148,7 +148,9 @@ def background_response_handler(sid):
 
         # Check if assistant's response is available
         if chat_response:
-            socketio.emit('agent_response', {'message': chat_response}, room=sid)
+            # Extract the part after the last 'assistant: ' keyword
+            last_response = chat_response.rsplit('assistant: ', 1)[-1]
+            socketio.emit('agent_response', {'message': last_response}, room=sid)
             break  # Exit the loop after sending the response
 
         # Sleep before the next poll to prevent excessive requests
