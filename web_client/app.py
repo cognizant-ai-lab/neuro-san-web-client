@@ -1,8 +1,12 @@
-from flask import Flask, render_template, request, session
-from flask_socketio import SocketIO
-from backend.agents.session.service_agent_session import ServiceAgentSession
 import json
 import threading
+
+from flask import Flask
+from flask import render_template
+from flask import request
+from flask import session
+from flask_socketio import SocketIO
+from neuro_san.session.service_agent_session import ServiceAgentSession
 
 # Initialize a lock
 user_sessions_lock = threading.Lock()
