@@ -1,0 +1,171 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    
+        <style>
+          #mynetwork {
+              width: 100%;
+              background-color: #222222;
+              border: 1px solid lightgray;
+              position: relative;
+          }
+        
+          body, html {
+              margin: 0;
+              padding: 0;
+              overflow: hidden;  /* Prevent scrollbars in the iframe */
+              width: 100%;
+              height: 100%;
+          }
+        
+          .vis-network {
+              display: flex;
+              justify-content: center;  /* Center horizontally */
+              align-items: center;      /* Center vertically */
+          }
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "white"}, "id": "customer_service_agent", "label": "customer_service_agent", "shape": "dot", "title": "Instructions: \nYou are the top-level agent responsible for handling all inquiries from Wells Fargo customers.\nYou are the primary point of contact, addressing basic questions about bank accounts, loans, and other services.\nIf an issue requires specialized assistance, you will coordinate with relevant specialists.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: No command\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "financial_advisor", "label": "financial_advisor", "shape": "dot", "title": "Instructions: \nYou provide personalized financial guidance to Wells Fargo customers, including advice on investments, retirement planning, and wealth management.\nYou assess customers\u0027 financial needs and goals, and recommend suitable banking or investment products.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "loan_specialist", "label": "loan_specialist", "shape": "dot", "title": "Instructions: \nYou handle loan and mortgage-related inquiries for Wells Fargo customers, assisting with applications, terms, and approval processes.\nYou guide customers through personal, auto, and home loan options, ensuring they understand requirements and eligibility.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "fraud_resolution_agent", "label": "fraud_resolution_agent", "shape": "dot", "title": "Instructions: \nYou investigate and resolve fraud cases for Wells Fargo customers, ensuring account security and helping to reclaim any compromised funds.\nYou work with customers who suspect fraudulent activity, gathering details and escalating cases as needed.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "digital_banking_support", "label": "digital_banking_support", "shape": "dot", "title": "Instructions: \nYou provide technical support for Wells Fargo\u0027s online and mobile banking platforms, assisting customers with login issues, app navigation, and troubleshooting.\nYou help customers resolve access issues, conduct online transactions, and set up digital banking services.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wealth_management_specialist", "label": "wealth_management_specialist", "shape": "dot", "title": "Instructions: \nYou provide in-depth support for high-net-worth individuals, managing portfolios, and investment strategies at Wells Fargo.\nYou assist financial advisors with executing wealth management plans, focusing on asset growth and client satisfaction.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "mortgage_underwriter", "label": "mortgage_underwriter", "shape": "dot", "title": "Instructions: \nYou assess and approve mortgage applications for Wells Fargo, ensuring applicants meet financial and regulatory standards.\nYou review applications from loan specialists and evaluate applicants\u0027 creditworthiness, income, and property value.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "loan_processor", "label": "loan_processor", "shape": "dot", "title": "Instructions: \nYou prepare and review loan documents, facilitating the process from approval to disbursement for Wells Fargo customers.\nYou work with loan specialists to ensure all required documentation is complete and that loans are processed efficiently.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "fraud_investigator", "label": "fraud_investigator", "shape": "dot", "title": "Instructions: \nYou conduct detailed investigations of fraud cases at Wells Fargo, analyzing transaction patterns and working to recover lost funds.\nYou collaborate with fraud resolution agents to track suspicious activity, flagging accounts, and reporting to the compliance team.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "compliance_officer", "label": "compliance_officer", "shape": "dot", "title": "Instructions: \nYou ensure that all fraud investigations and banking operations comply with legal and regulatory standards for Wells Fargo.\nYou oversee cases flagged by fraud investigators, ensuring the bank\u0027s compliance with financial laws and security protocols.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "technical_support_engineer", "label": "technical_support_engineer", "shape": "dot", "title": "Instructions: \nYou provide back-end technical support to ensure the functionality and security of Wells Fargo\u0027s digital banking services.\nYou address complex technical issues, ensuring online banking platforms run smoothly and securely for customers.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "customer_service_agent", "to": "financial_advisor"}, {"arrows": "to", "from": "customer_service_agent", "to": "loan_specialist"}, {"arrows": "to", "from": "customer_service_agent", "to": "fraud_resolution_agent"}, {"arrows": "to", "from": "customer_service_agent", "to": "digital_banking_support"}, {"arrows": "to", "from": "financial_advisor", "to": "wealth_management_specialist"}, {"arrows": "to", "from": "loan_specialist", "to": "mortgage_underwriter"}, {"arrows": "to", "from": "loan_specialist", "to": "loan_processor"}, {"arrows": "to", "from": "fraud_resolution_agent", "to": "fraud_investigator"}, {"arrows": "to", "from": "fraud_resolution_agent", "to": "compliance_officer"}, {"arrows": "to", "from": "digital_banking_support", "to": "technical_support_engineer"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"enabled": false}, "interaction": {"zoomView": false, "dragView": true}, "manipulation": {"enabled": false}, "autoResize": true};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+<script type="text/javascript">
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.agentName) {
+            const agentName = event.data.agentName;
+
+            // Directly compare the lowercase agent name with the node ID
+            const matchingNode = nodes.get().find(node => node.id.toLowerCase() === agentName);
+
+            if (matchingNode) {
+                // Reset the color of all nodes to default
+                nodes.forEach(function(node) {
+                    nodes.update({ id: node.id, color: '#97c2fc' });
+                });
+
+                // Highlight the matched node
+                nodes.update({ id: matchingNode.id, color: '#ff6347' });
+            }
+        }
+    });
+</script>
+    </body>
+</html>
