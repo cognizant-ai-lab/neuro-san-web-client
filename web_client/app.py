@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session
 from flask_socketio import SocketIO
-from backend.agents.session.service_agent_session import ServiceAgentSession
+from neuro_san.session.service_agent_session import ServiceAgentSession
 import json
 import threading
 
