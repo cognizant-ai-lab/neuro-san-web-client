@@ -12,10 +12,20 @@ pip install -r requirements.txt
 Generate an HTML diagram of agents based on a .hocon file containing an agent network configuration:
 
 ```bash
-python -m neuro_san_web_client.agents_diagram_builder --input_file <path_to_hocon_file> --output_file <path_to_output_file>
+python -m neuro_san_web_client.agents_diagram_builder --input_file <path_to_hocon_file>
 ````
+There is also an optional `--output_file <path_to_output_file>` argument to specify the output file. 
+By default, if no --output_file argument is specified,
+the .html file is automatically generated in the web client's static directory.
 
 For example, for a `onec_assistant.hocon` file:
+
+```bash
+python -m neuro_san_web_client.agents_diagram_builder --input_file /Users/754337/workspace/neuro-san-1c/registries/onec_assistant.hocon
+````
+
+is equivalent to:
+
 ```bash
 python -m neuro_san_web_client.agents_diagram_builder --input_file /Users/754337/workspace/neuro-san-1c/registries/onec_assistant.hocon --output_file ./neuro_san_web_client/static/onec_assistant.html
 ````
