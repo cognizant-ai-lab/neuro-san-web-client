@@ -1,7 +1,13 @@
+from pathlib import Path
+
 import argparse
+import os
 
 from pyhocon import ConfigFactory
 from pyvis.network import Network
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+PATH_TO_STATIC = os.path.join(ROOT_DIR, 'static')
 
 
 class DiagramBuilder:
@@ -132,7 +138,7 @@ class DiagramBuilder:
         with open(output_html, 'w') as file:
             file.write(html_content)
 
-    def create_agent_diagram_from_hocon(self, hocon_file, output_html="agent_network.html"):
+    def create_agent_diagram_from_hocon(self, hocon_file, output_html):
         # Load the HOCON configuration
         agent_data = ConfigFactory.parse_file(hocon_file)
 
@@ -140,6 +146,12 @@ class DiagramBuilder:
         agent_graph = self.parse_agent_definitions(agent_data)
 
         # Create an interactive agent graph and save it as a web page
+        if output_html is None:
+            # Get the file name without extension
+            file_name = Path(hocon_file).stem
+            # Generate the output file name
+            output_html = str(PATH_TO_STATIC / Path(f"{file_name}.html"))
+            print(f"Output file not specified. Saving to {output_html}")
         self.create_interactive_agent_graph(agent_graph, output_html)
 
     def parse_args(self):
@@ -152,9 +164,10 @@ class DiagramBuilder:
         )
         arg_parser.add_argument("-i", "--input_file", type=str, default=None, required=True,
                                 help="Path to the input .hocon file containing the agent network definition")
-        arg_parser.add_argument("-o", "--output_file", type=str, default=None, required=True,
-                                help="Path to the file to generate: an .html file containing the interactive"
-                                     " agent network diagram")
+        arg_parser.add_argument("-o", "--output_file", type=str, default=None, required=False,
+                                help="Path to the file to generate: an .html file that will contain the interactive"
+                                     " agent network diagram. If not specified, the output file will be saved"
+                                     "in the 'static' folder with the same name as the input file and .html extension.")
         self.args = arg_parser.parse_args()
 
     def main(self):
