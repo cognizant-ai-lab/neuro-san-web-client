@@ -31,32 +31,51 @@ class DiagramBuilder:
                 "command": tool.get("command", "No command"),
                 "class": tool.get("class", "No class")
             }
-            agent_graph[agent_name] = {"info": agent_info, "connections": tool.get("tools", [])}
+            agent_graph[agent_name] = {
+                "info": agent_info,
+                "connections": tool.get("tools", [])
+            }
 
         return agent_graph
 
     @staticmethod
     def create_interactive_agent_graph(agent_graph, output_html):
         # Initialize a pyvis network graph
-        net = Network(height="750px", width="100%", bgcolor="#222222", font_color="white", directed=True)
+        net = Network(height="750px", width="100%", bgcolor="#222222",
+                      font_color="white", directed=True)
 
-        # Step 2: First add all nodes to the pyvis network
+        # Step 2: Keep track of which nodes have already been added
+        existing_nodes = set()
+
+        # Add all known agent nodes to the pyvis network
         for agent_name, agent_data in agent_graph.items():
             # Add node with hover information
-            hover_text = f"Instructions: {agent_data['info']['instructions']}<br>"
-            hover_text += f"Class: {agent_data['info']['class']}<br>"
-            hover_text += f"Command: {agent_data['info']['command']}<br>"
-
+            hover_text = (
+                f"Instructions: {agent_data['info']['instructions']}<br>"
+                f"Class: {agent_data['info']['class']}<br>"
+                f"Command: {agent_data['info']['command']}<br>"
+            )
             net.add_node(agent_name, title=hover_text, label=agent_name)
+            existing_nodes.add(agent_name)
 
-        # Step 3: Then add all edges (connections between agents)
+        # Step 3: Add all edges (and create missing nodes in a different color)
         for agent_name, agent_data in agent_graph.items():
             connections = agent_data["connections"]
             for connection in connections:
                 if connection in agent_graph:
+                    # Normal edge, since this connection/agent exists
                     net.add_edge(agent_name, connection)
                 else:
+                    # This tool/agent does not exist in agent_graph
                     print(f"Warning: {connection} referenced by {agent_name} does not exist.")
+
+                    # Create a missing node if it hasn't been added yet
+                    if connection not in existing_nodes:
+                        net.add_node(connection, label=connection, color="green")
+                        existing_nodes.add(connection)
+
+                    # Add edge from agent_name to the newly created/missing node
+                    net.add_edge(agent_name, connection)
 
         # Disable hierarchical layout and physics for free node movement
         net.set_options("""
@@ -91,7 +110,7 @@ class DiagramBuilder:
                   border: 1px solid lightgray;
                   position: relative;
               }
-            
+
               body, html {
                   margin: 0;
                   padding: 0;
@@ -99,7 +118,7 @@ class DiagramBuilder:
                   width: 100%;
                   height: 100%;
               }
-            
+
               .vis-network {
                   display: flex;
                   justify-content: center;  /* Center horizontally */
@@ -112,16 +131,16 @@ class DiagramBuilder:
         window.addEventListener('message', function(event) {
             if (event.data && event.data.agentName) {
                 const agentName = event.data.agentName;
-    
+
                 // Directly compare the lowercase agent name with the node ID
                 const matchingNode = nodes.get().find(node => node.id.toLowerCase() === agentName);
-    
+
                 if (matchingNode) {
                     // Reset the color of all nodes to default
                     nodes.forEach(function(node) {
                         nodes.update({ id: node.id, color: '#97c2fc' });
                     });
-    
+
                     // Highlight the matched node
                     nodes.update({ id: matchingNode.id, color: '#ff6347' });
                 }

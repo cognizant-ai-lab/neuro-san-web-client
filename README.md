@@ -1,4 +1,4 @@
-# agent_network_web_client
+# Neuro SAN Web Client
 A web client for agent-networks built using the Neuro AI agent framework (neuro-san)
 
 ## Installation
