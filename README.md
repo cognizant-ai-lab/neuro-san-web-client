@@ -12,24 +12,34 @@ pip install -r requirements.txt
 Generate an HTML diagram of agents based on a .hocon file containing an agent network configuration:
 
 ```bash
-python -m utils.agents_diagram_builder --input_file <path_to_hocon_file> --output_file <path_to_output_file>
+python -m neuro_san_web_client.agents_diagram_builder --input_file <path_to_hocon_file>
 ````
+There is also an optional `--output_file <path_to_output_file>` argument to specify the output file. 
+By default, if no --output_file argument is specified,
+the .html file is automatically generated in the web client's static directory.
 
 For example, for a `onec_assistant.hocon` file:
+
 ```bash
-python -m utils.agents_diagram_builder --input_file /Users/754337/workspace/neuro-san-1c/registries/onec_assistant.hocon --output_file ./web_client/static/onec_assistant.html
+python -m neuro_san_web_client.agents_diagram_builder --input_file /Users/754337/workspace/neuro-san-1c/registries/onec_assistant.hocon
+````
+
+is equivalent to:
+
+```bash
+python -m neuro_san_web_client.agents_diagram_builder --input_file /Users/754337/workspace/neuro-san-1c/registries/onec_assistant.hocon --output_file ./neuro_san_web_client/static/onec_assistant.html
 ````
 
 ## Start the web client
 Start the application with:
 ```bash
-python -m web_client.app
+python -m neuro_san_web_client.app
 ```
 Then go to http://127.0.0.1:5432 in your browser.
 
 In the Configuration tab, choose an Agent Network Name, e.g. "onec_assistant".
 This agent network name should match
-- the name of a `.html` file in the `web_client/static` directory
+- the name of a `.html` file in the `neuro_san_web_client/static` directory
 - the name of the `.hocon` file used when starting the `neuro-san` server. 
 Then click the "update" button to update the Agent Network Diagram.
 
