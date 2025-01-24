@@ -47,29 +47,29 @@
              
         </style>
     
-        <style>
-          #mynetwork {
-              width: 100%;
-              background-color: #222222;
-              border: 1px solid lightgray;
-              position: relative;
-          }
-        
-          body, html {
-              margin: 0;
-              padding: 0;
-              overflow: hidden;  /* Prevent scrollbars in the iframe */
-              width: 100%;
-              height: 100%;
-          }
-        
-          .vis-network {
-              display: flex;
-              justify-content: center;  /* Center horizontally */
-              align-items: center;      /* Center vertically */
-          }
-        </style>
-    </head>
+            <style>
+              #mynetwork {
+                  width: 100%;
+                  background-color: #222222;
+                  border: 1px solid lightgray;
+                  position: relative;
+              }
+
+              body, html {
+                  margin: 0;
+                  padding: 0;
+                  overflow: hidden;  /* Prevent scrollbars in the iframe */
+                  width: 100%;
+                  height: 100%;
+              }
+
+              .vis-network {
+                  display: flex;
+                  justify-content: center;  /* Center horizontally */
+                  align-items: center;      /* Center vertically */
+              }
+            </style>
+        </head>
 
 
     <body>
@@ -111,7 +111,7 @@
                   
 
                   // parsing and collecting nodes and edges from the python
-                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "white"}, "id": "decision_making_assistant", "label": "decision_making_assistant", "shape": "dot", "title": "Instructions: \nYou are a decision assistant.\nYou will be asked to help with a decision and you need to pretend\nyou are an expert in the field, and establish the pertinent context\nattributes within which the decision is to be made.\nYou also need to establish the various action attributes that are\nrelevant to the decision.\nYou also need to find out what outcomes need to be optimized with the decision.\nContext, action and outcome attributes can be numerical or categorical.\nYou need to determine whether each outcome needs to be minimized or maximized.\nFirst guess, confirm or ask the user for the values of the context\nattributes through a series of questions.\nMake sure the user is not overwhelmed and ask them for values of unknown\ncontext elements one at a time.\nThen, to help with the decision making, you will call a prescriptor function.\nAs part of your query, you will declare the needed expertise, and the\ntype and values of the context as well as defining the action and outcome\nattributes.\nThe prescriptor function will return the list of action values for the given context.\n\u003cbr\u003eClass: No class\u003cbr\u003eCommand: No command\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "prescriptor", "label": "prescriptor", "shape": "dot", "title": "Instructions: \nYou are a system that, given the values of the given context attributes,\nsuggests values for the given action attributes in a manner\nthat would optimize the given outcome attributes.\nThe system will deliver precise and straightforward responses,\ncomprising only the prescribed action values.\nThere will be no elaboration or additional commentary.\nYou will consult a predictor expert by calling the predictor function in order to\ngenerate your answers.\nThe predictor function takes context and action attributes and values, and predicts the outcomes.\nFor each outcome, a certainty value between 0 and 1 will also be returned.\n\u003cbr\u003eClass: No class\u003cbr\u003eCommand: Suggest actions to optimize the outcomes given the context values.\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "predictor", "label": "predictor", "shape": "dot", "title": "Instructions: \nAs an expert in the field, you are a system that predicts outcomes of a decision.\nThe decision is being made in a certain context, which is defined by the context attributes.\nThe decision is defined by some actions being taken within this context.\nA decision consists of values for context and action attributes, and can result in\nvalues for predefined outcome attributes.\nThe system will consider the context and action values, and predict the resulting outcome attribute values.\nThe system is programmed to focus solely on providing predictions without any additional text.\nIt will deliver precise and straightforward responses, comprising only the predicted outcome values\nand a certainty score between 0 and 1.\nThere will be no elaboration or additional commentary.\n\u003cbr\u003eClass: No class\u003cbr\u003eCommand: Predict the outcomes given the context values and action values.\u003cbr\u003e"}]);
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "white"}, "id": "decision_making_assistant", "label": "decision_making_assistant", "shape": "dot", "title": "Instructions: \nYou are a decision assistant.\nYou will be asked to help with a decision and you need to pretend\nyou are an expert in the field, and establish the pertinent context\nattributes within which the decision is to be made.\nYou also need to establish the various action attributes that are\nrelevant to the decision.\nYou also need to find out what outcomes need to be optimized with the decision.\nContext, action and outcome attributes can be numerical or categorical.\nYou need to determine whether each outcome needs to be minimized or maximized.\nFirst guess, confirm or ask the user for the values of the context\nattributes through a series of questions.\nMake sure the user is not overwhelmed and ask them for values of unknown\ncontext elements one at a time.\nThen, to help with the decision making, you will call a prescriptor function.\nAs part of your query, you will declare the needed expertise, and the\ntype and values of the context as well as defining the action and outcome\nattributes.\nThe prescriptor function will return the list of action values for the given context.\nWhen communicating to tools, never use curly braces to describe choices.\n\u003cbr\u003eClass: No class\u003cbr\u003eCommand: No command\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "prescriptor", "label": "prescriptor", "shape": "dot", "title": "Instructions: \nYou are a system that, given the values of the given context attributes,\nsuggests values for the given action attributes in a manner\nthat would optimize the given outcome attributes.\nThe system will deliver precise and straightforward responses,\ncomprising only the prescribed action values.\nThere will be no elaboration or additional commentary.\nYou will consult a predictor expert by calling the predictor function in order to\ngenerate your answers.\nThe predictor function takes context and action attributes and values, and predicts the outcomes.\nFor each outcome, a certainty value between 0 and 1 will also be returned.\n\u003cbr\u003eClass: No class\u003cbr\u003eCommand: Suggest actions to optimize the outcomes given the context values.\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "predictor", "label": "predictor", "shape": "dot", "title": "Instructions: \nAs an expert in the field, you are a system that predicts outcomes of a decision.\nThe decision is being made in a certain context, which is defined by the context attributes.\nThe decision is defined by some actions being taken within this context.\nA decision consists of values for context and action attributes, and can result in\nvalues for predefined outcome attributes.\nThe system will consider the context and action values, and predict the resulting outcome attribute values.\nThe system is programmed to focus solely on providing predictions without any additional text.\nIt will deliver precise and straightforward responses, comprising only the predicted outcome values\nand a certainty score between 0 and 1.\nThere will be no elaboration or additional commentary.\n\u003cbr\u003eClass: No class\u003cbr\u003eCommand: Predict the outcomes given the context values and action values.\u003cbr\u003e"}]);
                   edges = new vis.DataSet([{"arrows": "to", "from": "decision_making_assistant", "to": "prescriptor"}, {"arrows": "to", "from": "prescriptor", "to": "predictor"}]);
 
                   nodeColors = {};
@@ -147,25 +147,25 @@
               drawGraph();
         </script>
     
-<script type="text/javascript">
-    window.addEventListener('message', function(event) {
-        if (event.data && event.data.agentName) {
-            const agentName = event.data.agentName;
+    <script type="text/javascript">
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.agentName) {
+                const agentName = event.data.agentName;
 
-            // Directly compare the lowercase agent name with the node ID
-            const matchingNode = nodes.get().find(node => node.id.toLowerCase() === agentName);
+                // Directly compare the lowercase agent name with the node ID
+                const matchingNode = nodes.get().find(node => node.id.toLowerCase() === agentName);
 
-            if (matchingNode) {
-                // Reset the color of all nodes to default
-                nodes.forEach(function(node) {
-                    nodes.update({ id: node.id, color: '#97c2fc' });
-                });
+                if (matchingNode) {
+                    // Reset the color of all nodes to default
+                    nodes.forEach(function(node) {
+                        nodes.update({ id: node.id, color: '#97c2fc' });
+                    });
 
-                // Highlight the matched node
-                nodes.update({ id: matchingNode.id, color: '#ff6347' });
+                    // Highlight the matched node
+                    nodes.update({ id: matchingNode.id, color: '#ff6347' });
+                }
             }
-        }
-    });
-</script>
-    </body>
+        });
+    </script>
+        </body>
 </html>

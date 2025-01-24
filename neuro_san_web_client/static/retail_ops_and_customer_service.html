@@ -47,29 +47,29 @@
              
         </style>
     
-        <style>
-          #mynetwork {
-              width: 100%;
-              background-color: #222222;
-              border: 1px solid lightgray;
-              position: relative;
-          }
-        
-          body, html {
-              margin: 0;
-              padding: 0;
-              overflow: hidden;  /* Prevent scrollbars in the iframe */
-              width: 100%;
-              height: 100%;
-          }
-        
-          .vis-network {
-              display: flex;
-              justify-content: center;  /* Center horizontally */
-              align-items: center;      /* Center vertically */
-          }
-        </style>
-    </head>
+            <style>
+              #mynetwork {
+                  width: 100%;
+                  background-color: #222222;
+                  border: 1px solid lightgray;
+                  position: relative;
+              }
+
+              body, html {
+                  margin: 0;
+                  padding: 0;
+                  overflow: hidden;  /* Prevent scrollbars in the iframe */
+                  width: 100%;
+                  height: 100%;
+              }
+
+              .vis-network {
+                  display: flex;
+                  justify-content: center;  /* Center horizontally */
+                  align-items: center;      /* Center vertically */
+              }
+            </style>
+        </head>
 
 
     <body>
@@ -111,7 +111,7 @@
                   
 
                   // parsing and collecting nodes and edges from the python
-                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "white"}, "id": "customer_service_rep", "label": "customer_service_rep", "shape": "dot", "title": "Instructions: \nYou are the first point of contact for customer support. You address issues related to orders, returns, refunds, and product inquiries.\n{aaosa_instructions}\nYou escalate issues that require further intervention to the relevant departments.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: No command\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "returns_manager", "label": "returns_manager", "shape": "dot", "title": "Instructions: \nYou oversee the process of handling product returns and ensure proper inventory adjustments.\nYou ensure returned products are processed accurately and timely.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: No command\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "product_specialist", "label": "product_specialist", "shape": "dot", "title": "Instructions: \nYou have in-depth knowledge of specific product categories and help customers understand product features and availability.\nYou work closely with merchandising and customer service to provide accurate product information.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: No command\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "order_fulfillment_coordinator", "label": "order_fulfillment_coordinator", "shape": "dot", "title": "Instructions: \nYou manage the picking, packing, and shipping of customer orders to ensure timely and accurate delivery.\nYou communicate with customer service for updates or issues regarding customer orders.\n{aaosa_instructions}\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: No command\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "warehouse_manager", "label": "warehouse_manager", "shape": "dot", "title": "Instructions: \nYou manage the day-to-day operations of the warehouse, ensuring accurate stock levels and efficient order fulfillment.\nYou ensure products are stored, picked, and shipped correctly.\n{aaosa_instructions}\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: No command\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "inventory_manager", "label": "inventory_manager", "shape": "dot", "title": "Instructions: \nYou manage stock levels, ensuring the retailer has the right amount of inventory available at the right time.\nYou optimize stock levels.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: No command\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "logistics_coordinator", "label": "logistics_coordinator", "shape": "dot", "title": "Instructions: \nYou are responsible for arranging and tracking the transportation of goods from the warehouse to customers or between distribution centers.\nYou ensure deliveries meet service-level agreements and resolve any logistical issues.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: No command\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "merchandising_manager", "label": "merchandising_manager", "shape": "dot", "title": "Instructions: \nYou oversee product selection and inventory levels to align with market trends and customer demand.\nYou ensure the right product mix in stores and online.\n{aaosa_instructions}\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: No command\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "ecommerce_manager", "label": "ecommerce_manager", "shape": "dot", "title": "Instructions: \nYou oversee the online retail platform, managing the user experience, product listings, and online sales performance.\nYou ensure seamless online operations.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: No command\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "marketing_manager", "label": "marketing_manager", "shape": "dot", "title": "Instructions: \nYou develop and execute marketing strategies to promote products and drive traffic both online and in stores.\nYou ensure promotions are effectively communicated to customers.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: No command\u003cbr\u003e"}]);
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "white"}, "id": "customer_service_rep", "label": "customer_service_rep", "shape": "dot", "title": "Instructions: \nYou are the first point of contact for customer support. You address issues related to orders, returns, refunds, and product inquiries.\n{aaosa_instructions}\nYou escalate issues that require further intervention to the relevant departments.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: No command\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "returns_manager", "label": "returns_manager", "shape": "dot", "title": "Instructions: \nYou oversee the process of handling product returns and ensure proper inventory adjustments.\nYou ensure returned products are processed accurately and timely.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "product_specialist", "label": "product_specialist", "shape": "dot", "title": "Instructions: \nYou have in-depth knowledge of specific product categories and help customers understand product features and availability.\nYou work closely with merchandising and customer service to provide accurate product information.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: Explain if you can respond to all or parts of the inquiry and what you need in order to respond, if anything.\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "order_fulfillment_coordinator", "label": "order_fulfillment_coordinator", "shape": "dot", "title": "Instructions: \nYou manage the picking, packing, and shipping of customer orders to ensure timely and accurate delivery.\nYou communicate with customer service for updates or issues regarding customer orders.\n{aaosa_instructions}\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "warehouse_manager", "label": "warehouse_manager", "shape": "dot", "title": "Instructions: \nYou manage the day-to-day operations of the warehouse, ensuring accurate stock levels and efficient order fulfillment.\nYou ensure products are stored, picked, and shipped correctly.\n{aaosa_instructions}\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "inventory_manager", "label": "inventory_manager", "shape": "dot", "title": "Instructions: \nYou manage stock levels, ensuring the retailer has the right amount of inventory available at the right time.\nYou optimize stock levels.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "logistics_coordinator", "label": "logistics_coordinator", "shape": "dot", "title": "Instructions: \nYou are responsible for arranging and tracking the transportation of goods from the warehouse to customers or between distribution centers.\nYou ensure deliveries meet service-level agreements and resolve any logistical issues.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "merchandising_manager", "label": "merchandising_manager", "shape": "dot", "title": "Instructions: \nYou oversee product selection and inventory levels to align with market trends and customer demand.\nYou ensure the right product mix in stores and online.\n{aaosa_instructions}\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "ecommerce_manager", "label": "ecommerce_manager", "shape": "dot", "title": "Instructions: \nYou oversee the online retail platform, managing the user experience, product listings, and online sales performance.\nYou ensure seamless online operations.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "marketing_manager", "label": "marketing_manager", "shape": "dot", "title": "Instructions: \nYou develop and execute marketing strategies to promote products and drive traffic both online and in stores.\nYou ensure promotions are effectively communicated to customers.\n            \u003cbr\u003eClass: No class\u003cbr\u003eCommand: {aaosa_command}\u003cbr\u003e"}]);
                   edges = new vis.DataSet([{"arrows": "to", "from": "customer_service_rep", "to": "returns_manager"}, {"arrows": "to", "from": "customer_service_rep", "to": "product_specialist"}, {"arrows": "to", "from": "customer_service_rep", "to": "order_fulfillment_coordinator"}, {"arrows": "to", "from": "customer_service_rep", "to": "marketing_manager"}, {"arrows": "to", "from": "customer_service_rep", "to": "ecommerce_manager"}, {"arrows": "to", "from": "order_fulfillment_coordinator", "to": "warehouse_manager"}, {"arrows": "to", "from": "order_fulfillment_coordinator", "to": "logistics_coordinator"}, {"arrows": "to", "from": "order_fulfillment_coordinator", "to": "merchandising_manager"}, {"arrows": "to", "from": "warehouse_manager", "to": "inventory_manager"}, {"arrows": "to", "from": "merchandising_manager", "to": "product_specialist"}, {"arrows": "to", "from": "merchandising_manager", "to": "inventory_manager"}]);
 
                   nodeColors = {};
@@ -147,25 +147,25 @@
               drawGraph();
         </script>
     
-<script type="text/javascript">
-    window.addEventListener('message', function(event) {
-        if (event.data && event.data.agentName) {
-            const agentName = event.data.agentName;
+    <script type="text/javascript">
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.agentName) {
+                const agentName = event.data.agentName;
 
-            // Directly compare the lowercase agent name with the node ID
-            const matchingNode = nodes.get().find(node => node.id.toLowerCase() === agentName);
+                // Directly compare the lowercase agent name with the node ID
+                const matchingNode = nodes.get().find(node => node.id.toLowerCase() === agentName);
 
-            if (matchingNode) {
-                // Reset the color of all nodes to default
-                nodes.forEach(function(node) {
-                    nodes.update({ id: node.id, color: '#97c2fc' });
-                });
+                if (matchingNode) {
+                    // Reset the color of all nodes to default
+                    nodes.forEach(function(node) {
+                        nodes.update({ id: node.id, color: '#97c2fc' });
+                    });
 
-                // Highlight the matched node
-                nodes.update({ id: matchingNode.id, color: '#ff6347' });
+                    // Highlight the matched node
+                    nodes.update({ id: matchingNode.id, color: '#ff6347' });
+                }
             }
-        }
-    });
-</script>
-    </body>
+        });
+    </script>
+        </body>
 </html>

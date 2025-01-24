@@ -47,29 +47,29 @@
              
         </style>
     
-        <style>
-          #mynetwork {
-              width: 100%;
-              background-color: #222222;
-              border: 1px solid lightgray;
-              position: relative;
-          }
-        
-          body, html {
-              margin: 0;
-              padding: 0;
-              overflow: hidden;  /* Prevent scrollbars in the iframe */
-              width: 100%;
-              height: 100%;
-          }
-        
-          .vis-network {
-              display: flex;
-              justify-content: center;  /* Center horizontally */
-              align-items: center;      /* Center vertically */
-          }
-        </style>
-    </head>
+            <style>
+              #mynetwork {
+                  width: 100%;
+                  background-color: #222222;
+                  border: 1px solid lightgray;
+                  position: relative;
+              }
+
+              body, html {
+                  margin: 0;
+                  padding: 0;
+                  overflow: hidden;  /* Prevent scrollbars in the iframe */
+                  width: 100%;
+                  height: 100%;
+              }
+
+              .vis-network {
+                  display: flex;
+                  justify-content: center;  /* Center horizontally */
+                  align-items: center;      /* Center vertically */
+              }
+            </style>
+        </head>
 
 
     <body>
@@ -147,25 +147,25 @@
               drawGraph();
         </script>
     
-<script type="text/javascript">
-    window.addEventListener('message', function(event) {
-        if (event.data && event.data.agentName) {
-            const agentName = event.data.agentName;
+    <script type="text/javascript">
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.agentName) {
+                const agentName = event.data.agentName;
 
-            // Directly compare the lowercase agent name with the node ID
-            const matchingNode = nodes.get().find(node => node.id.toLowerCase() === agentName);
+                // Directly compare the lowercase agent name with the node ID
+                const matchingNode = nodes.get().find(node => node.id.toLowerCase() === agentName);
 
-            if (matchingNode) {
-                // Reset the color of all nodes to default
-                nodes.forEach(function(node) {
-                    nodes.update({ id: node.id, color: '#97c2fc' });
-                });
+                if (matchingNode) {
+                    // Reset the color of all nodes to default
+                    nodes.forEach(function(node) {
+                        nodes.update({ id: node.id, color: '#97c2fc' });
+                    });
 
-                // Highlight the matched node
-                nodes.update({ id: matchingNode.id, color: '#ff6347' });
+                    // Highlight the matched node
+                    nodes.update({ id: matchingNode.id, color: '#ff6347' });
+                }
             }
-        }
-    });
-</script>
-    </body>
+        });
+    </script>
+        </body>
 </html>

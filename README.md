@@ -18,16 +18,16 @@ There is also an optional `--output_file <path_to_output_file>` argument to spec
 By default, if no --output_file argument is specified,
 the .html file is automatically generated in the web client's static directory.
 
-For example, for a `onec_assistant.hocon` file:
+For example, for a `intranet_agents.hocon` file:
 
 ```bash
-python -m neuro_san_web_client.agents_diagram_builder --input_file /Users/754337/workspace/neuro-san-1c/registries/onec_assistant.hocon
+python -m neuro_san_web_client.agents_diagram_builder --input_file /Users/754337/workspace/neuro-san/registries/intranet_agents.hocon
 ````
 
 is equivalent to:
 
 ```bash
-python -m neuro_san_web_client.agents_diagram_builder --input_file /Users/754337/workspace/neuro-san-1c/registries/onec_assistant.hocon --output_file ./neuro_san_web_client/static/onec_assistant.html
+python -m neuro_san_web_client.agents_diagram_builder --input_file /Users/754337/workspace/neuro-san/registries/intranet_agents.hocon --output_file ./neuro_san_web_client/static/intranet_agents.html
 ````
 
 ## Start the web client
@@ -37,7 +37,7 @@ python -m neuro_san_web_client.app
 ```
 Then go to http://127.0.0.1:5432 in your browser.
 
-In the Configuration tab, choose an Agent Network Name, e.g. "onec_assistant".
+In the Configuration tab, choose an Agent Network Name, e.g. "intranet_agents".
 This agent network name should match
 - the name of a `.html` file in the `neuro_san_web_client/static` directory
 - the name of the `.hocon` file used when starting the `neuro-san` server. 
