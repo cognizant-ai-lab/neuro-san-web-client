@@ -62,21 +62,23 @@ steps:
   
   build_wheel:
     title: Build wheel file
+    # We'll move to python 3.12 soon, but using 3.10 currently
     image: 634208487213.dkr.ecr.us-west-2.amazonaws.com/python-and-git:3.10-2.46.0
     shell: bash
     description: Build wheel file for distribution
     working_directory: ${{CF_REPO_NAME}}
     commands:
+      # pip install everything
       - pip install -r requirements-build.txt
       - pip install -r ${WITH_CREDS_REQUIREMENTS}
       - pip install -r requirements.txt
-
+      # now build the wheel file
       - python -m build --wheel
       - mkdir -p ${{CF_VOLUME_PATH}}/${{CF_BUILD_ID}}
       - cd dist && mv ${PACKAGE_NAME}*.whl ${{CF_VOLUME_PATH}}/${{CF_BUILD_ID}}
 
   upload_to_S3:
-    title: Upload Wheel to S3
+    title: Upload Wheel to S3 (only at github Release)
     # doc for aws-s3 step https://codefresh.io/steps/step/aws-s3
     type: aws-s3
     arguments:
