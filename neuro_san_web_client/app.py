@@ -3,6 +3,7 @@ from flask_socketio import SocketIO
 from neuro_san.session.service_agent_session import ServiceAgentSession
 import json
 import threading
+import argparse
 import os
 
 # Initialize a lock
@@ -158,8 +159,24 @@ def background_response_handler(sid):
         # Sleep before the next poll to prevent excessive requests
         socketio.sleep(1)
 
+def get_app_port():
+    """
+    Determines the port to run the Flask app on.
+    Priority order:
+    1. Command-line argument (`-p` or `--port`)
+    2. Environment variable (`WEB_CLIENT_PORT`)
+    3. Default value from `DEFAULT_CONFIG`
+    """
+    parser = argparse.ArgumentParser(description="Run the Flask app with a configurable port.")
+    parser.add_argument('-p', '--port', type=int, help="Port number for the web client")
+    args, _ = parser.parse_known_args()  # Allows ignoring unknown args (e.g., when running under a process manager)
+
+    # Determine final port value
+    port = args.port or int(os.getenv("WEB_CLIENT_PORT", DEFAULT_CONFIG['web_client_port']))
+    
+    print(f"Starting Flask app on port {port}...")  # Debugging output
+    return port
 
 if __name__ == '__main__':
     # Use env variable or fallback to default
-    port = int(os.getenv("WEB_CLIENT_PORT", DEFAULT_CONFIG['web_client_port']))
-    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=port)
+    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=get_app_port())
