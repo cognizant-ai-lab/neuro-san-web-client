@@ -3,6 +3,7 @@ from flask_socketio import SocketIO
 from neuro_san.session.service_agent_session import ServiceAgentSession
 import json
 import threading
+import os
 
 # Initialize a lock
 user_sessions_lock = threading.Lock()
@@ -15,7 +16,8 @@ socketio = SocketIO(app, async_mode='eventlet')
 # Default configuration
 DEFAULT_CONFIG = {
     'host': 'localhost',
-    'port': 30011,
+    'server_port': 30011,
+    'web_client_port': 5001,
     # 'agent_name': 'esp_decision_assistant',
     'agent_name': 'telco_network_support',
     'thinking_file': '/tmp/agent_thinking.txt'
@@ -26,7 +28,7 @@ def get_agent_session():
     if 'agent_session' not in session:
         # Use session variables only within request context
         host = session.get('host', DEFAULT_CONFIG['host'])
-        port = session.get('port', DEFAULT_CONFIG['port'])
+        port = session.get('server_port', DEFAULT_CONFIG['server_port'])
         agent_name = session.get('agent_name', DEFAULT_CONFIG['agent_name'])
         session['agent_session'] = ServiceAgentSession(
             host=host,
@@ -41,14 +43,14 @@ def index():
     if request.method == 'POST':
         # Update configuration based on user input
         session['host'] = request.form.get('host', DEFAULT_CONFIG['host'])
-        session['port'] = int(request.form.get('port', DEFAULT_CONFIG['port']))
+        session['server_port'] = int(request.form.get('server_port', DEFAULT_CONFIG['server_port']))
         session['agent_name'] = request.form.get('agent_name', DEFAULT_CONFIG['agent_name'])
         # Initialize agent session with new config
         session['agent_session'] = None
     return render_template('index.html',
                            agent_name=session.get('agent_name', DEFAULT_CONFIG['agent_name']),
                            host=session.get('host', DEFAULT_CONFIG['host']),
-                           port=session.get('port', DEFAULT_CONFIG['port']))
+                           port=session.get('server_port', DEFAULT_CONFIG['server_port']))
 
 
 # noinspection PyUnresolvedReferences
@@ -66,7 +68,7 @@ def handle_user_input(data):
         if not user_data:
             # Use the current session values for agent configuration
             host = session.get('host', DEFAULT_CONFIG['host'])
-            port = session.get('port', DEFAULT_CONFIG['port'])
+            port = session.get('server_port', DEFAULT_CONFIG['server_port'])
             agent_name = session.get('agent_name', DEFAULT_CONFIG['agent_name'])
             agent_session = ServiceAgentSession(
                 host=host,
@@ -158,4 +160,6 @@ def background_response_handler(sid):
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=5432)
+    # Use env variable or fallback to default
+    port = int(os.getenv("WEB_CLIENT_PORT", DEFAULT_CONFIG['web_client_port']))
+    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=port)
