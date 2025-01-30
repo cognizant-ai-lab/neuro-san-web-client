@@ -25,7 +25,9 @@ DEFAULT_CONFIG = {
 }
 
 
+# Use this method to ensure session persistence
 def get_agent_session():
+    """Retrieves or initializes the agent session with the correct configuration values."""
     if 'agent_session' not in session:
         # Use session variables only within request context
         host = session.get('neuro_san_server_host', app.config['server_host'])
@@ -43,14 +45,12 @@ def get_agent_session():
 def index():
     if request.method == 'POST':
         # Update configuration based on user input
-        session['neuro_san_server_host'] = request.form.get('neuro_san_server_host', 
-                                                            app.config['server_host'])
-        session['neuro_san_server_port'] = int(request.form.get('neuro_san_server_port', 
-                                                                app.config['server_port']))
-        session['neuro_san_agent_name'] = request.form.get('neuro_san_agent_name', 
-                                                           app.config['agent_name'])
+        session['neuro_san_server_host'] = request.form.get('host', session['neuro_san_server_host'])
+        session['neuro_san_server_port'] = int(request.form.get('port', session['neuro_san_server_port']))
+        session['neuro_san_agent_name'] = request.form.get('agent_name', session['neuro_san_agent_name'])
         # Initialize agent session with new config
-        session['agent_session'] = None
+        session['agent_session'] = get_agent_session()
+
     return render_template('index.html',
                            agent_name=session.get('neuro_san_agent_name', app.config['agent_name']),
                            host=session.get('neuro_san_server_host', app.config['server_host']),
@@ -195,7 +195,7 @@ def parse_args():
 if __name__ == '__main__':
     config = parse_args()
     # Store config in Flask app for later use
-    # Items can be accessed anywhere in Flask routes using app.config['neuro_san_agent_name']
+    # Items can be accessed anywhere in Flask routes e.g. using app.config['neuro_san_agent_name']
     app.config.update(config)
     # Start the app with the parsed configuration
     socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=config['web_client_port'])
