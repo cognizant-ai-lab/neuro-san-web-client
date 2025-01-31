@@ -30,9 +30,9 @@ def get_agent_session():
     """Retrieves or initializes the agent session with the correct configuration values."""
     if 'agent_session' not in session:
         # Use session variables only within request context
-        host = session.get('neuro_san_server_host', app.config['server_host'])
-        port = session.get('neuro_san_server_port', app.config['server_port'])
-        agent_name = session.get('neuro_san_agent_name', app.config['agent_name'])
+        host = session.get('server_host', app.config['server_host'])
+        port = session.get('server_port', app.config['server_port'])
+        agent_name = session.get('agent_name', app.config['agent_name'])
         session['agent_session'] = ServiceAgentSession(
             host=host,
             port=port,
@@ -45,16 +45,16 @@ def get_agent_session():
 def index():
     if request.method == 'POST':
         # Update configuration based on user input
-        session['neuro_san_server_host'] = request.form.get('host', session['neuro_san_server_host'])
-        session['neuro_san_server_port'] = int(request.form.get('port', session['neuro_san_server_port']))
-        session['neuro_san_agent_name'] = request.form.get('agent_name', session['neuro_san_agent_name'])
+        session['server_host'] = request.form.get('host', session.get('server_host'))
+        session['server_port'] = int(request.form.get('port', session.get('server_port')))
+        session['agent_name'] = request.form.get('agent_name', session.get('agent_name'))
         # Initialize agent session with new config
-        session['agent_session'] = get_agent_session()
+        session['agent_session'] = None
 
     return render_template('index.html',
-                           agent_name=session.get('neuro_san_agent_name', app.config['agent_name']),
-                           host=session.get('neuro_san_server_host', app.config['server_host']),
-                           port=session.get('neuro_san_server_port', app.config['server_port']))
+                           agent_name=session.get('agent_name', app.config['agent_name']),
+                           host=session.get('server_host', app.config['server_host']),
+                           port=session.get('server_port', app.config['server_port']))
 
 
 # noinspection PyUnresolvedReferences
@@ -71,9 +71,9 @@ def handle_user_input(data):
         user_data = user_sessions.get(sid)
         if not user_data:
             # Use the current session values for agent configuration
-            host = session.get('neuro_san_server_host', app.config['server_host'])
-            port = session.get('neuro_san_server_port', app.config['server_port'])
-            agent_name = session.get('neuro_san_agent_name', app.config['agent_name'])
+            host = session.get('server_host', app.config['server_host'])
+            port = session.get('server_port', app.config['server_port'])
+            agent_name = session.get('agent_name', app.config['agent_name'])
             agent_session = ServiceAgentSession(
                 host=host,
                 port=port,
