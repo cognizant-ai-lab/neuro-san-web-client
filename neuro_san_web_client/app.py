@@ -3,6 +3,8 @@ from flask_socketio import SocketIO
 from neuro_san.session.service_agent_session import ServiceAgentSession
 import json
 import threading
+import argparse
+import os
 
 # Initialize a lock
 user_sessions_lock = threading.Lock()
@@ -14,20 +16,22 @@ socketio = SocketIO(app, async_mode='eventlet')
 
 # Default configuration
 DEFAULT_CONFIG = {
-    'host': 'localhost',
-    'port': 30011,
-    # 'agent_name': 'esp_decision_assistant',
-    'agent_name': 'telco_network_support',
+    'neuro_san_server_host': 'localhost',
+    'neuro_san_server_port': 30011,
+    'neuro_san_web_client_port': 5001,
+    'neuro_san_agent_name': 'telco_network_support',
     'thinking_file': '/tmp/agent_thinking.txt'
 }
 
 
+# Use this method to ensure session persistence
 def get_agent_session():
+    """Retrieves or initializes the agent session with the correct configuration values."""
     if 'agent_session' not in session:
         # Use session variables only within request context
-        host = session.get('host', DEFAULT_CONFIG['host'])
-        port = session.get('port', DEFAULT_CONFIG['port'])
-        agent_name = session.get('agent_name', DEFAULT_CONFIG['agent_name'])
+        host = session.get('server_host', app.config['server_host'])
+        port = session.get('server_port', app.config['server_port'])
+        agent_name = session.get('agent_name', app.config['agent_name'])
         session['agent_session'] = ServiceAgentSession(
             host=host,
             port=port,
@@ -40,15 +44,16 @@ def get_agent_session():
 def index():
     if request.method == 'POST':
         # Update configuration based on user input
-        session['host'] = request.form.get('host', DEFAULT_CONFIG['host'])
-        session['port'] = int(request.form.get('port', DEFAULT_CONFIG['port']))
-        session['agent_name'] = request.form.get('agent_name', DEFAULT_CONFIG['agent_name'])
+        session['server_host'] = request.form.get('host', app.config.get('server_host'))
+        session['server_port'] = int(request.form.get('port', app.config.get('server_port')))
+        session['agent_name'] = request.form.get('agent_name', app.config.get('agent_name'))
         # Initialize agent session with new config
         session['agent_session'] = None
+
     return render_template('index.html',
-                           agent_name=session.get('agent_name', DEFAULT_CONFIG['agent_name']),
-                           host=session.get('host', DEFAULT_CONFIG['host']),
-                           port=session.get('port', DEFAULT_CONFIG['port']))
+                           agent_name=session.get('agent_name', app.config['agent_name']),
+                           host=session.get('server_host', app.config['server_host']),
+                           port=session.get('server_port', app.config['server_port']))
 
 
 # noinspection PyUnresolvedReferences
@@ -65,9 +70,9 @@ def handle_user_input(data):
         user_data = user_sessions.get(sid)
         if not user_data:
             # Use the current session values for agent configuration
-            host = session.get('host', DEFAULT_CONFIG['host'])
-            port = session.get('port', DEFAULT_CONFIG['port'])
-            agent_name = session.get('agent_name', DEFAULT_CONFIG['agent_name'])
+            host = session.get('server_host', app.config['server_host'])
+            port = session.get('server_port', app.config['server_port'])
+            agent_name = session.get('agent_name', app.config['agent_name'])
             agent_session = ServiceAgentSession(
                 host=host,
                 port=port,
@@ -156,6 +161,40 @@ def background_response_handler(sid):
         # Sleep before the next poll to prevent excessive requests
         socketio.sleep(1)
 
+def parse_args():
+    """
+    Parses command-line arguments for server and agent configuration.
+    Priority order:
+    1. Command-line arguments (highest priority)
+    2. Environment or local variables (medium priority)
+    3. Default values from `DEFAULT_CONFIG` (fallback)
+    """
+    parser = argparse.ArgumentParser(description="Configure the Neuro SAN web client and server.")
+
+    parser.add_argument('--server-host', type=str,
+                        default=os.getenv("NEURO_SAN_SERVER_HOST", DEFAULT_CONFIG['neuro_san_server_host']),
+                        help="Host address for the Neuro SAN server")
+    parser.add_argument('--server-port', type=int,
+                        default=int(os.getenv("NEURO_SAN_SERVER_PORT", DEFAULT_CONFIG['neuro_san_server_port'])),
+                        help="Port number for the Neuro SAN server")
+    parser.add_argument('--web-client-port', type=int,
+                        default=int(os.getenv("NEURO_SAN_WEB_CLIENT_PORT", DEFAULT_CONFIG['neuro_san_web_client_port'])),
+                        help="Port number for the web client")
+    parser.add_argument('--agent-name', type=str,
+                        default=os.getenv("NEURO_SAN_AGENT_NAME", DEFAULT_CONFIG['neuro_san_agent_name']),
+                        help="Agent name for the session")
+
+    args, _ = parser.parse_known_args()
+
+    config = vars(args)
+
+    print(f"Starting app with Configuration: {config}")
+    return config
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=5432)
+    config = parse_args()
+    # Store config in Flask app for later use
+    # Items can be accessed anywhere in Flask routes e.g. using app.config['neuro_san_agent_name']
+    app.config.update(config)
+    # Start the app with the parsed configuration
+    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=config['web_client_port'])

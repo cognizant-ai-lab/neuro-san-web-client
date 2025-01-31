@@ -6,7 +6,7 @@ pyOpenSSL==24.0.0
 PyJWT>=2.9.0
 hvac==1.1.0
 
-eventlet==0.33.3  # or the latest version
+eventlet==0.39.0  # or the latest version
 
 # For the HTML diagram builder tool
 pyvis~=0.3.2
