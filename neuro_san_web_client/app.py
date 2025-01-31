@@ -19,7 +19,6 @@ DEFAULT_CONFIG = {
     'neuro_san_server_host': 'localhost',
     'neuro_san_server_port': 30011,
     'neuro_san_web_client_port': 5001,
-    # 'neuro_san_agent_name': 'esp_decision_assistant',
     'neuro_san_agent_name': 'telco_network_support',
     'thinking_file': '/tmp/agent_thinking.txt'
 }
