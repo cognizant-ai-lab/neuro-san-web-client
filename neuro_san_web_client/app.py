@@ -44,9 +44,9 @@ def get_agent_session():
 def index():
     if request.method == 'POST':
         # Update configuration based on user input
-        session['server_host'] = request.form.get('host', session.get('server_host'))
-        session['server_port'] = int(request.form.get('port', session.get('server_port')))
-        session['agent_name'] = request.form.get('agent_name', session.get('agent_name'))
+        session['server_host'] = request.form.get('host', app.config.get('server_host'))
+        session['server_port'] = int(request.form.get('port', app.config.get('server_port')))
+        session['agent_name'] = request.form.get('agent_name', app.config.get('agent_name'))
         # Initialize agent session with new config
         session['agent_session'] = None
 
