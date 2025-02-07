@@ -24,22 +24,6 @@ DEFAULT_CONFIG = {
 }
 
 
-# Use this method to ensure session persistence
-def get_agent_session():
-    """Retrieves or initializes the agent session with the correct configuration values."""
-    if 'agent_session' not in session:
-        # Use session variables only within request context
-        host = session.get('server_host', app.config['server_host'])
-        port = session.get('server_port', app.config['server_port'])
-        agent_name = session.get('agent_name', app.config['agent_name'])
-        session['agent_session'] = ServiceAgentSession(
-            host=host,
-            port=port,
-            agent_name=agent_name
-        )
-    return session['agent_session']
-
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
