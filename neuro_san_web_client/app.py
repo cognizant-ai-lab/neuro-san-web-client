@@ -1,7 +1,11 @@
+from typing import Any
+from typing import Dict
+
 from flask import Flask, render_template, request, session
 from flask import redirect
 from flask import url_for
 from flask_socketio import SocketIO
+from neuro_san.internals.messages.chat_message_type import ChatMessageType
 from neuro_san.session.service_agent_session import ServiceAgentSession
 import json
 import threading
@@ -77,13 +81,7 @@ def handle_user_input(data):
             agent_session = user_data['agent_session']
             session_id = user_data['session_id']
 
-    chat_request = {
-        'session_id': session_id,
-        'user_input': user_input
-    }
-
-    if sly_data:
-        chat_request['sly_data'] = json.loads(sly_data)
+    chat_request = formulate_chat_request(session_id, user_input, sly_data)
 
     chat_response = agent_session.chat(chat_request)
     print(f"chat_response: {chat_response}")
@@ -148,6 +146,27 @@ def background_response_handler(sid):
 
         # Sleep before the next poll to prevent excessive requests
         socketio.sleep(1)
+
+def formulate_chat_request(session_id, user_input: str, sly_data: Dict[str, Any] = None) -> Dict[str, Any]:
+    """
+    Formulates a single chat request given the user_input
+    :param session_id: The session ID to send
+    :param user_input: The string to send
+    :param sly_data: The sly_data dictionary to send
+    :return: A dictionary representing the chat request to send
+    """
+    chat_request = {
+        "session_id": session_id,
+        "user_message": {
+            "type": ChatMessageType.HUMAN,
+            "text": user_input
+        }
+    }
+
+    if sly_data is not None and len(sly_data.keys()) > 0:
+        chat_request["sly_data"] = sly_data
+
+    return chat_request
 
 def parse_args():
     """
