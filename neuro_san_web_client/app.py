@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, session
+from flask import redirect
+from flask import url_for
 from flask_socketio import SocketIO
 from neuro_san.session.service_agent_session import ServiceAgentSession
 import json
@@ -16,28 +18,12 @@ socketio = SocketIO(app, async_mode='eventlet')
 
 # Default configuration
 DEFAULT_CONFIG = {
-    'neuro_san_server_host': 'localhost',
-    'neuro_san_server_port': 30011,
-    'neuro_san_web_client_port': 5001,
-    'neuro_san_agent_name': 'telco_network_support',
+    'server_host': 'localhost',
+    'server_port': 30011,
+    'web_client_port': 5001,
+    'agent_name': 'telco_network_support',
     'thinking_file': '/tmp/agent_thinking.txt'
 }
-
-
-# Use this method to ensure session persistence
-def get_agent_session():
-    """Retrieves or initializes the agent session with the correct configuration values."""
-    if 'agent_session' not in session:
-        # Use session variables only within request context
-        host = session.get('server_host', app.config['server_host'])
-        port = session.get('server_port', app.config['server_port'])
-        agent_name = session.get('agent_name', app.config['agent_name'])
-        session['agent_session'] = ServiceAgentSession(
-            host=host,
-            port=port,
-            agent_name=agent_name
-        )
-    return session['agent_session']
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -49,6 +35,8 @@ def index():
         session['agent_name'] = request.form.get('agent_name', app.config.get('agent_name'))
         # Initialize agent session with new config
         session['agent_session'] = None
+        # Redirect to the index page to avoid form resubmission messages on refresh
+        return redirect(url_for('index'))
 
     return render_template('index.html',
                            agent_name=session.get('agent_name', app.config['agent_name']),
@@ -172,16 +160,16 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Configure the Neuro SAN web client and server.")
 
     parser.add_argument('--server-host', type=str,
-                        default=os.getenv("NEURO_SAN_SERVER_HOST", DEFAULT_CONFIG['neuro_san_server_host']),
+                        default=os.getenv("NEURO_SAN_SERVER_HOST", DEFAULT_CONFIG['server_host']),
                         help="Host address for the Neuro SAN server")
     parser.add_argument('--server-port', type=int,
-                        default=int(os.getenv("NEURO_SAN_SERVER_PORT", DEFAULT_CONFIG['neuro_san_server_port'])),
+                        default=int(os.getenv("NEURO_SAN_SERVER_PORT", DEFAULT_CONFIG['server_port'])),
                         help="Port number for the Neuro SAN server")
     parser.add_argument('--web-client-port', type=int,
-                        default=int(os.getenv("NEURO_SAN_WEB_CLIENT_PORT", DEFAULT_CONFIG['neuro_san_web_client_port'])),
+                        default=int(os.getenv("NEURO_SAN_WEB_CLIENT_PORT", DEFAULT_CONFIG['web_client_port'])),
                         help="Port number for the web client")
     parser.add_argument('--agent-name', type=str,
-                        default=os.getenv("NEURO_SAN_AGENT_NAME", DEFAULT_CONFIG['neuro_san_agent_name']),
+                        default=os.getenv("NEURO_SAN_AGENT_NAME", DEFAULT_CONFIG['agent_name']),
                         help="Agent name for the session")
 
     args, _ = parser.parse_known_args()
@@ -194,7 +182,7 @@ def parse_args():
 if __name__ == '__main__':
     config = parse_args()
     # Store config in Flask app for later use
-    # Items can be accessed anywhere in Flask routes e.g. using app.config['neuro_san_agent_name']
+    # Items can be accessed anywhere in Flask routes e.g. using app.config['agent_name']
     app.config.update(config)
     # Start the app with the parsed configuration
     socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=config['web_client_port'])
