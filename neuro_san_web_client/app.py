@@ -5,9 +5,8 @@ from flask import Flask, render_template, request, session
 from flask import redirect
 from flask import url_for
 from flask_socketio import SocketIO
-from neuro_san.internals.messages.chat_message_type import ChatMessageType
+from neuro_san.client.streaming_input_processor import StreamingInputProcessor
 from neuro_san.session.service_agent_session import ServiceAgentSession
-import json
 import threading
 import argparse
 import os
@@ -26,7 +25,8 @@ DEFAULT_CONFIG = {
     'server_port': 30011,
     'web_client_port': 5001,
     'agent_name': 'telco_network_support',
-    'thinking_file': '/tmp/agent_thinking.txt'
+    'thinking_file': '/tmp/agent_thinking.txt',
+    'thinking_dir': '/tmp'
 }
 
 
@@ -70,28 +70,36 @@ def handle_user_input(data):
                 port=port,
                 agent_name=agent_name
             )
-            session_id = None
+            input_processor = StreamingInputProcessor(default_input = "",
+                                                      thinking_file = DEFAULT_CONFIG['thinking_file'],
+                                                      session = agent_session,
+                                                      thinking_dir = DEFAULT_CONFIG['thinking_dir'])
+            state: Dict[str, Any] = {
+                "last_logs": [],
+                "last_chat_response": None,
+                "prompt": "Default prompt",
+                "timeout": None,  # No input time out - users can take their time
+                "num_input": 0,
+                "user_input": user_input,
+                "sly_data": sly_data,
+            }
             user_data = {
-                'agent_session': agent_session,
-                'session_id': session_id,
-                'last_logs_length': 0  # Initialize logs length
+                'input_processor': input_processor,
+                'state': state
             }
             user_sessions[sid] = user_data
         else:
-            agent_session = user_data['agent_session']
-            session_id = user_data['session_id']
+            input_processor = user_data['input_processor']
+            state = user_data['state']
+            # Update user input in state
+            state["user_input"] = user_input
 
-    chat_request = formulate_chat_request(session_id, user_input, sly_data)
-
-    chat_response = agent_session.chat(chat_request)
-    print(f"chat_response: {chat_response}")
-
-    if not session_id:
-        session_id = chat_response.get('session_id')
-        user_data['session_id'] = session_id
+    state = input_processor.process_once(state)
+    user_data['state'] = state
+    last_chat_response = state.get("last_chat_response")
 
     # Start a background task and pass necessary data
-    socketio.start_background_task(target=background_response_handler, sid=sid)
+    socketio.start_background_task(target=background_response_handler, chat_response=last_chat_response, sid=sid)
 
 
 # noinspection PyUnresolvedReferences
@@ -104,69 +112,22 @@ def handle_disconnect():
     print(f"Client disconnected: {sid}")
 
 
-def background_response_handler(sid):
-    while True:
-        # Retrieve user-specific data
-        with user_sessions_lock:
-            user_data = user_sessions.get(sid)
-        if not user_data:
-            print(f"No user data found for sid {sid}")
-            return
+def background_response_handler(chat_response: str, sid):
+        socketio.emit('agent_response', {'message': chat_response}, room=sid)
 
-        agent_session = user_data['agent_session']
-        session_id = user_data['session_id']
-        last_logs_length = user_data.get('last_logs_length', 0)
 
-        logs_request = {'session_id': session_id}
-        logs_response = agent_session.logs(logs_request)
+def clear_thinking_file():
+    # Clear out the previous thinking file
+    #
+    # Incorrectly flagged as destination of Path Traversal 5
+    #   Reason: thinking_file was previously checked with FileOfClass.check_file()
+    #           which actually does the path traversal check. CheckMarx does not
+    #           recognize pathlib as a valid library with which to resolve these kinds
+    #           of issues.  Furthermore, this is a client command line tool that is never
+    #           used inside servers which just happens to be part of a library offering.
+    with open(DEFAULT_CONFIG['thinking_file'], "w", encoding="utf-8") as thinking:
+        thinking.write("\n")
 
-        # Get logs and chat response
-        logs = logs_response.get('logs', [])
-        chat_response = logs_response.get('chat_response')
-
-        # Emit new logs to the client
-        new_logs = logs[last_logs_length:]
-        for log in new_logs:
-            socketio.emit('agent_log', {'log': log}, room=sid)
-        last_logs_length = len(logs)
-
-        # Update last_logs_length in user_data
-        with user_sessions_lock:
-            user_data['last_logs_length'] = last_logs_length
-
-        # **Print chat_response for debugging**
-        print(f"chat_response: {chat_response}")
-
-        # Check if assistant's response is available
-        if chat_response:
-            # Extract the part after the last 'assistant: ' keyword
-            last_response = chat_response.rsplit('assistant: ', 1)[-1]
-            socketio.emit('agent_response', {'message': last_response}, room=sid)
-            break  # Exit the loop after sending the response
-
-        # Sleep before the next poll to prevent excessive requests
-        socketio.sleep(1)
-
-def formulate_chat_request(session_id, user_input: str, sly_data: Dict[str, Any] = None) -> Dict[str, Any]:
-    """
-    Formulates a single chat request given the user_input
-    :param session_id: The session ID to send
-    :param user_input: The string to send
-    :param sly_data: The sly_data dictionary to send
-    :return: A dictionary representing the chat request to send
-    """
-    chat_request = {
-        "session_id": session_id,
-        "user_message": {
-            "type": ChatMessageType.HUMAN,
-            "text": user_input
-        }
-    }
-
-    if sly_data is not None and len(sly_data.keys()) > 0:
-        chat_request["sly_data"] = sly_data
-
-    return chat_request
 
 def parse_args():
     """
@@ -203,5 +164,6 @@ if __name__ == '__main__':
     # Store config in Flask app for later use
     # Items can be accessed anywhere in Flask routes e.g. using app.config['agent_name']
     app.config.update(config)
+    clear_thinking_file()
     # Start the app with the parsed configuration
     socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=config['web_client_port'])
