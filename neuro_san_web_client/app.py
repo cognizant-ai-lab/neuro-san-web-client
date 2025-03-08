@@ -1,15 +1,20 @@
+import argparse
+import os
+import threading
 from typing import Any
 from typing import Dict
 
-from flask import Flask, render_template, request, session
+from flask import Flask
 from flask import redirect
+from flask import render_template
+from flask import request
+from flask import session
 from flask import url_for
 from flask_socketio import SocketIO
 from neuro_san.client.streaming_input_processor import StreamingInputProcessor
 from neuro_san.session.service_agent_session import ServiceAgentSession
-import threading
-import argparse
-import os
+
+from agent_log_processor import AgentLogProcessor
 
 # Initialize a lock
 user_sessions_lock = threading.Lock()
@@ -74,6 +79,10 @@ def handle_user_input(data):
                                                       thinking_file = DEFAULT_CONFIG['thinking_file'],
                                                       session = agent_session,
                                                       thinking_dir = DEFAULT_CONFIG['thinking_dir'])
+            # Add a processor to handle agent logs
+            agent_log_processor = AgentLogProcessor(socketio, sid)
+            input_processor.processor.add_processor(agent_log_processor)
+
             state: Dict[str, Any] = {
                 "last_logs": [],
                 "last_chat_response": None,
