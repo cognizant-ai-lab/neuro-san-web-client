@@ -20,7 +20,7 @@ from neuro_san.message_processing.message_processor import MessageProcessor
 
 class AgentLogProcessor(MessageProcessor):
     """
-    Tells the UI there's an agent logs to process.
+    Tells the UI there's an agent log to process.
     """
 
     def __init__(self, socketio: SocketIO, sid: str):
@@ -59,3 +59,5 @@ class AgentLogProcessor(MessageProcessor):
         print(f"LOG: {log_dict["log"]}")
 
         self.socketio.emit('agent_log', log_dict, room=self.sid)
+        # Allow the event loop to process and send WebSocket messages before continuing execution.
+        self.socketio.sleep(0)
