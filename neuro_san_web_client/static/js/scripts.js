@@ -29,9 +29,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     socket.on('agent_log', function(data) {
-        agentLogs.textContent += data.log + '\n';
+        // Get the agent name and log from the data
+        const agent_name = data.agent_name;
+        const agent_log = data.log;
+
+        // Print data to console for debugging
+        console.log('Activating agent:', agent_name);
+
+        agentLogs.textContent += agent_log + '\n';
         agentLogs.scrollTop = agentLogs.scrollHeight;
-        highlightAgentInGraph(data.agent_name);  // Send the agent name to be highlighted
+        highlightAgentInGraph(agent_name);  // Send the agent name to be highlighted
     });
 
     socket.on('agent_response', function(data) {

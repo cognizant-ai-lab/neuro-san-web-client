@@ -14,7 +14,7 @@ from flask_socketio import SocketIO
 from neuro_san.client.streaming_input_processor import StreamingInputProcessor
 from neuro_san.session.service_agent_session import ServiceAgentSession
 
-from agent_log_processor import AgentLogProcessor
+from neuro_san_web_client.agent_log_processor import AgentLogProcessor
 
 # Initialize a lock
 user_sessions_lock = threading.Lock()
@@ -129,11 +129,10 @@ def clear_thinking_file():
     # Clear out the previous thinking file
     #
     # Incorrectly flagged as destination of Path Traversal 5
-    #   Reason: thinking_file was previously checked with FileOfClass.check_file()
-    #           which actually does the path traversal check. CheckMarx does not
-    #           recognize pathlib as a valid library with which to resolve these kinds
-    #           of issues.  Furthermore, this is a client command line tool that is never
-    #           used inside servers which just happens to be part of a library offering.
+    # Reason: thinking_file was previously checked with FileOfClass.check_file()
+    #         which actually does the path traversal check. CheckMarx does not
+    #         recognize pathlib as a valid library with which to resolve these kinds
+    #         of issues.
     with open(DEFAULT_CONFIG['thinking_file'], "w", encoding="utf-8") as thinking:
         thinking.write("\n")
 
