@@ -132,8 +132,8 @@ class DiagramBuilder:
             if (event.data && event.data.agentName) {
                 const agentName = event.data.agentName;
 
-                // Directly compare the lowercase agent name with the node ID
-                const matchingNode = nodes.get().find(node => node.id.toLowerCase() === agentName);
+                // Directly compare agent name with the node ID
+                const matchingNode = nodes.get().find(node => node.id === agentName);
 
                 if (matchingNode) {
                     // Reset the color of all nodes to default
