@@ -9,13 +9,11 @@
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    />
 
     <!-- Font Awesome CSS -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-    />
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <!-- Google Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap">
@@ -61,7 +59,6 @@
                 </button>
             </div>
         </div>
-        <br><br>
         <details id="diagram-details">
             <summary>
                 Agent Network Diagram
@@ -85,14 +82,27 @@
             <div id="configForm">
                 <div class="card-body">
                     <form method="POST" action="/">
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="host">Host:</label>
-                                <input type="text" class="form-control"  id="host" name="host" value="{{ host }}">
-                                <label for="port">Port:</label>
-                                <input type="text" class="form-control"  id="port" name="port" value="{{ port }}">
-                                <label for="agent_name">Agent Network Name:</label>
-                                <input type="text" class="form-control"  id="agent_name" name="agent_name" value="{{ agent_name }}">
+                        <div class="form-group row">
+                            <label for="host" class="col-sm-2 col-form-label"><i class="fas fa-server"></i> Host:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="host" name="host" value="{{ host }}"
+                                       placeholder="Enter the host address" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="port" class="col-sm-2 col-form-label"><i class="fas fa-plug"></i> Port:</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" id="port" name="port" value="{{ port }}"
+                                       placeholder="Enter port number" required min="1" max="65535">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="agent_name" class="col-sm-2 col-form-label"><i class="fas fa-network-wired"></i> Agent Network Name:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="agent_name" name="agent_name"
+                                       value="{{ agent_name }}" placeholder="Enter agent name" required>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">

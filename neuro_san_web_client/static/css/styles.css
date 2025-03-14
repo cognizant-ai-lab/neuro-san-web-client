@@ -222,19 +222,19 @@ summary:hover {
     background-color: #e9ecef; /* Subtle color change on hover */
 }
 form label[for="agent_name"] {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     padding-left: 10px;
 }
 form label[for="host"] {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     padding-left: 10px;
 }
 form label[for="port"] {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     padding-left: 10px;
 }
 form button[type="submit"] {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     margin-left: 10px;
     margin-top: 10px;
 }
