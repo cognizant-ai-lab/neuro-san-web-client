@@ -1,12 +1,12 @@
 # Flask
-Flask==3.0.3
-Flask-SocketIO==5.4.1
+Flask==3.1.0
+Flask-SocketIO==5.5.1
 
-pyOpenSSL==24.0.0
-PyJWT>=2.9.0
+pyOpenSSL==25.0.0
+PyJWT>=2.10.1
 hvac==1.1.0
 
-eventlet==0.39.0  # or the latest version
+eventlet==0.39.1  # or the latest version
 
 # For the HTML diagram builder tool
 pyvis~=0.3.2
