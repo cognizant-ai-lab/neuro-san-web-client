@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.6.2/css/bootstrap.min.css"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     />
 
     <!-- Font Awesome CSS -->
@@ -82,17 +82,15 @@
             <summary>
                 Configuration
             </summary>
-            <br>
             <div id="configForm">
                 <div class="card-body">
                     <form method="POST" action="/">
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="server_host">Host:</label>
+                                <label for="host">Host:</label>
                                 <input type="text" class="form-control"  id="host" name="host" value="{{ host }}">
-                                <label for="server_port">Port:</label>
+                                <label for="port">Port:</label>
                                 <input type="text" class="form-control"  id="port" name="port" value="{{ port }}">
-                                <br><br>
                                 <label for="agent_name">Agent Network Name:</label>
                                 <input type="text" class="form-control"  id="agent_name" name="agent_name" value="{{ agent_name }}">
                             </div>
@@ -109,7 +107,7 @@
     <!-- jQuery and Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script
-      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.6.2/js/bootstrap.bundle.min.js"
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
     ></script>
 
     <!-- Custom JS -->
