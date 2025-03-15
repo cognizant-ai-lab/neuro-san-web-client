@@ -43,7 +43,7 @@ header h5 {
     flex-grow: 1;
     overflow-y: auto;
     background-color: #ffffff;
-    min-height: 200px; /* Set a minimum height for the chat window */
+    min-height: 300px; /* Set a minimum height for the chat window */
 }
 
 #messages {
@@ -88,8 +88,12 @@ header h5 {
 
 /* Loading indicator */
 #loading-indicator {
-    text-align: center;
-    margin-bottom: 10px;
+    display: flex;
+    align-items: center; /* Centers vertically */
+    justify-content: center; /* Centers horizontally */
+    gap: 10px; /* Adds spacing between spinner and text */
+    margin-top: 5px;
+    margin-bottom: 3px;
 }
 
 /* Input area styling */
