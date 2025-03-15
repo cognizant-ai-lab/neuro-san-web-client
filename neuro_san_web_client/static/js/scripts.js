@@ -29,19 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     socket.on('agent_log', function(data) {
-        agentLogs.textContent += data.log + '\n';
+        // Get the agent name and log from the data
+        const agent_name = data.agent_name;
+        const agent_log = data.log;
+        // Add the log to the agent communications frame
+        agentLogs.textContent += agent_log + '\n';
         agentLogs.scrollTop = agentLogs.scrollHeight;
-
-        // Extract the full agent name before "CALLED" or "RETURNED" using a more precise regex
-        const log = data.log;
-        const agentRegex = /([A-Za-z_]+) (?:CALLED|RETURNED)/;  // Regex to match agent names before "CALLED" or "RETURNED"
-        const match = log.match(agentRegex);
-
-        if (match && match[1]) {
-            const agentName = match[1].toLowerCase();  // Only lowercase the agent name
-//            console.log(`Extracted agent name: ${agentName}`);  // Debugging log to check the extracted agent name
-            highlightAgentInGraph(agentName);  // Send the agent name to be highlighted
-        }
+        // Highlight the agent node in the diagram
+        highlightAgentInGraph(agent_name);
     });
 
     socket.on('agent_response', function(data) {
