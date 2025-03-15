@@ -171,7 +171,16 @@ class DiagramBuilder:
             # Generate the output file name
             output_html = str(PATH_TO_STATIC / Path(f"{file_name}.html"))
             print(f"Output file not specified. Saving to {output_html}")
-        self.create_interactive_agent_graph(agent_graph, output_html)
+
+        # Creating the graph will also create the `lib` directory.
+        # Make sure it gets created in the **same** directory as the output_html file (e.g. the `static` directory).
+        cwd = os.getcwd()
+        try:
+            static_dir = os.path.dirname(output_html)
+            os.chdir(static_dir)
+            self.create_interactive_agent_graph(agent_graph, output_html)
+        finally:
+            os.chdir(cwd)
 
     def parse_args(self):
         """

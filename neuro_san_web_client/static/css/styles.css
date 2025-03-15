@@ -43,6 +43,7 @@ header h5 {
     flex-grow: 1;
     overflow-y: auto;
     background-color: #ffffff;
+    min-height: 300px; /* Set a minimum height for the chat window */
 }
 
 #messages {
@@ -87,8 +88,12 @@ header h5 {
 
 /* Loading indicator */
 #loading-indicator {
-    text-align: center;
-    margin-bottom: 10px;
+    display: flex;
+    align-items: center; /* Centers vertically */
+    justify-content: center; /* Centers horizontally */
+    gap: 10px; /* Adds spacing between spinner and text */
+    margin-top: 5px;
+    margin-bottom: 3px;
 }
 
 /* Input area styling */
@@ -222,19 +227,19 @@ summary:hover {
     background-color: #e9ecef; /* Subtle color change on hover */
 }
 form label[for="agent_name"] {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     padding-left: 10px;
 }
 form label[for="host"] {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     padding-left: 10px;
 }
 form label[for="port"] {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     padding-left: 10px;
 }
 form button[type="submit"] {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     margin-left: 10px;
     margin-top: 10px;
 }
