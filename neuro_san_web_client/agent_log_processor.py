@@ -12,9 +12,13 @@
 
 from typing import Any
 from typing import Dict
+# from typing import List
+
 from flask_socketio import SocketIO
 
 from neuro_san.internals.messages.chat_message_type import ChatMessageType
+from neuro_san.internals.messages.message_utils import pretty_the_messages
+from neuro_san.internals.messages.message_utils import convert_to_base_message
 from neuro_san.message_processing.message_processor import MessageProcessor
 
 
@@ -39,9 +43,20 @@ class AgentLogProcessor(MessageProcessor):
         if message_type == ChatMessageType.LEGACY_LOGS:
             # Ignore LEGACY_LOGS messages. They are redundant.
             return
+
         if chat_message_dict is None:
             print(">>>>chat_message_dict is None>>>>")
             return
+
+        print("  ---------- ChatMessage ----------")
+        # print(f"  MESSAGE_TYPE: {message_type}")
+        # print(f"  CHAT_MESSAGE_DICT: {chat_message_dict}")
+        # origin_log = self.process_origin(chat_message_dict["origin"])
+        # print(f"  ORIGIN: {origin_log}")
+        # print(f"  TYPE: {chat_message_dict['type']}")
+        # print(f"  MESSAGE: {chat_message_dict['text']}")
+        chat_message = convert_to_base_message(chat_message_dict, langchain_only=False)
+        print(pretty_the_messages([chat_message]))
 
         log_text = chat_message_dict.get("text")
         # Log message coming from the last agent
@@ -56,8 +71,15 @@ class AgentLogProcessor(MessageProcessor):
             "agent_name": agent_name
         }
 
-        print(f"LOG: {log_dict["log"]}")
+        # print("  ---------- ChatMessage ----------")
+        # print(f"  LOG: {log_dict["log"]}")
 
         self.socketio.emit('agent_log', log_dict, room=self.sid)
         # Allow the event loop to process and send WebSocket messages before continuing execution.
         self.socketio.sleep(0)
+
+    # @staticmethod
+    # def process_origin(origin: List) -> str:
+    #     # Extract tool names in order
+    #     sequence = " -> ".join(tool['tool'] for tool in origin)
+    #     return sequence

@@ -103,6 +103,7 @@ def handle_user_input(data):
             # Update user input in state
             state["user_input"] = user_input
 
+    print("========== Processing user message ==========")
     state = input_processor.process_once(state)
     user_data['state'] = state
     last_chat_response = state.get("last_chat_response")
