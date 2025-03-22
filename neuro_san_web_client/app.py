@@ -11,8 +11,9 @@ from flask import request
 from flask import session
 from flask import url_for
 from flask_socketio import SocketIO
+
 from neuro_san.client.streaming_input_processor import StreamingInputProcessor
-from neuro_san.session.service_agent_session import ServiceAgentSession
+from neuro_san.session.service_agent_session import GrpcServiceAgentSession
 
 from neuro_san_web_client.agent_log_processor import AgentLogProcessor
 
@@ -64,52 +65,64 @@ def handle_user_input(data):
 
     # Retrieve or initialize user-specific data
     with user_sessions_lock:
-        user_data = user_sessions.get(sid)
-        if not user_data:
-            # Use the current session values for agent configuration
-            host = session.get('server_host', app.config['server_host'])
-            port = session.get('server_port', app.config['server_port'])
-            agent_name = session.get('agent_name', app.config['agent_name'])
-            agent_session = ServiceAgentSession(
-                host=host,
-                port=port,
-                agent_name=agent_name
-            )
-            input_processor = StreamingInputProcessor(default_input = "",
-                                                      thinking_file = DEFAULT_CONFIG['thinking_file'],
-                                                      session = agent_session,
-                                                      thinking_dir = DEFAULT_CONFIG['thinking_dir'])
-            # Add a processor to handle agent logs
-            agent_log_processor = AgentLogProcessor(socketio, sid)
-            input_processor.processor.add_processor(agent_log_processor)
+        user_session = user_sessions.get(sid)
+        if not user_session:
+            # No session found: create a new one
+            user_session = create_user_session(sid)
+            user_sessions[sid] = user_session
 
-            state: Dict[str, Any] = {
-                "last_logs": [],
-                "last_chat_response": None,
-                "prompt": "Default prompt",
-                "timeout": None,  # No input time out - users can take their time
-                "num_input": 0,
-                "user_input": user_input,
-                "sly_data": sly_data,
-            }
-            user_data = {
-                'input_processor': input_processor,
-                'state': state
-            }
-            user_sessions[sid] = user_data
-        else:
-            input_processor = user_data['input_processor']
-            state = user_data['state']
-            # Update user input in state
-            state["user_input"] = user_input
+        input_processor = user_session['input_processor']
+        state = user_session['state']
+        # Update user input in state
+        state["user_input"] = user_input
+        state["sly_data"] = sly_data
 
-    print("========== Processing user message ==========")
-    state = input_processor.process_once(state)
-    user_data['state'] = state
-    last_chat_response = state.get("last_chat_response")
+        print("========== Processing user message ==========")
+        # Update the state
+        state = input_processor.process_once(state)
+        user_session['state'] = state
+        last_chat_response = state.get("last_chat_response")
 
-    # Start a background task and pass necessary data
-    socketio.start_background_task(target=background_response_handler, chat_response=last_chat_response, sid=sid)
+        # Start a background task and pass necessary data
+        socketio.start_background_task(target=background_response_handler, chat_response=last_chat_response, sid=sid)
+
+
+def create_user_session(sid):
+    host = session.get('server_host', app.config['server_host'])
+    port = session.get('server_port', app.config['server_port'])
+    agent_name = session.get('agent_name', app.config['agent_name'])
+    agent_session = GrpcServiceAgentSession(
+        host=host,
+        port=port,
+        agent_name=agent_name
+    )
+    input_processor = StreamingInputProcessor(default_input="",
+                                              thinking_file=DEFAULT_CONFIG['thinking_file'],
+                                              session=agent_session,
+                                              thinking_dir=DEFAULT_CONFIG['thinking_dir'])
+    # Add a processor to handle agent logs
+    agent_log_processor = AgentLogProcessor(socketio, sid)
+    input_processor.processor.add_processor(agent_log_processor)
+
+    # Note: If nothing is specified the server assumes the chat_filter_type
+    #       should be "MINIMAL", however for this client which is aimed at
+    #       developers, we specifically want a default MAXIMAL client to
+    #       show all the bells and whistles of the output that a typical
+    #       end user will not care about and not appreciate the extra
+    #       data charges on their cell phone.
+    chat_filter: Dict[str, Any] = {
+        "chat_filter_type": "MAXIMAL"
+    }
+    state: Dict[str, Any] = {
+        "last_chat_response": None,
+        "num_input": 0,
+        "chat_filter": chat_filter,
+    }
+    user_session = {
+        'input_processor': input_processor,
+        'state': state
+    }
+    return user_session
 
 
 # noinspection PyUnresolvedReferences
@@ -169,10 +182,10 @@ def parse_args():
     return config
 
 if __name__ == '__main__':
-    config = parse_args()
+    a_config = parse_args()
     # Store config in Flask app for later use
     # Items can be accessed anywhere in Flask routes e.g. using app.config['agent_name']
-    app.config.update(config)
+    app.config.update(a_config)
     clear_thinking_file()
     # Start the app with the parsed configuration
-    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=config['web_client_port'])
+    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=a_config['web_client_port'])

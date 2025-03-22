@@ -12,7 +12,6 @@
 
 from typing import Any
 from typing import Dict
-# from typing import List
 
 from flask_socketio import SocketIO
 
@@ -40,10 +39,6 @@ class AgentLogProcessor(MessageProcessor):
         :param chat_message_dict: The ChatMessage dictionary to process.
         :param message_type: The ChatMessageType of the chat_message_dictionary to process.
         """
-        if message_type == ChatMessageType.LEGACY_LOGS:
-            # Ignore LEGACY_LOGS messages. They are redundant.
-            return
-
         if chat_message_dict is None:
             print(">>>>chat_message_dict is None>>>>")
             return
