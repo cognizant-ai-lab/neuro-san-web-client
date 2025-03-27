@@ -101,6 +101,7 @@ def create_user_session(sid):
                                               session=agent_session,
                                               thinking_dir=DEFAULT_CONFIG['thinking_dir'])
     # Add a processor to handle agent logs
+    # and to highlight the agents that respond in the agent network diagram
     agent_log_processor = AgentLogProcessor(socketio, sid)
     input_processor.processor.add_processor(agent_log_processor)
 
