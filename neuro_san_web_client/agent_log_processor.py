@@ -42,11 +42,8 @@ class AgentLogProcessor(MessageProcessor):
         :param chat_message_dict: The chat message
         :param message_type: The type of message
         """
-        if message_type in [ChatMessageType.AGENT_FRAMEWORK,
-                            ChatMessageType.SYSTEM,
-                            ChatMessageType.AI,
-                            ChatMessageType.AGENT_TOOL_RESULT]:
-            # This is a framework message that contains the chat context, system prompts or consolidated messages.
+        if message_type != ChatMessageType.AGENT:
+            # This is a framework message that contains chat context, system prompts or consolidated messages.
             # Don't log them. And there's no agent to highlight in the network diagram.
             return
 
@@ -58,7 +55,7 @@ class AgentLogProcessor(MessageProcessor):
         # We have a valid message. Process it.
         # Get the list of agents that participated in the message and the name of the last agent,
         # which is the one that sent the message.
-        origin_chain, last_agent_name = self.get_origin(chat_message_dict, message_type)
+        origin_chain, last_agent_name = self.get_origin(chat_message_dict)
 
         header = "---------- ChatMessage ----------"
         log_message = f"{header}\n{origin_chain}: {log_text}"
@@ -68,43 +65,22 @@ class AgentLogProcessor(MessageProcessor):
         # and display the log message in the Agents Communication panel
         self.display_message_in_ui(last_agent_name, log_message)
 
-    def get_origin(self, chat_message_dict, message_type) -> Tuple[str, str]:
+    @staticmethod
+    def get_origin(chat_message_dict) -> Tuple[str, str]:
         """
         Get the list of agents that lead to this message and the agent that produced it.
         :param chat_message_dict: The chat message
-        :param message_type: The type of message
         :return: A tuple containing:
         - the list of agents involved, as a string,
         - the name of the agent that produced the message
         """
-        last_agent_name = None
-        if message_type == ChatMessageType.HUMAN:
-            origin = chat_message_dict.get("origin")
-            if len(origin) == 1:
-                # Request comes from the human directly
-                origin_chain = "HUMAN"
-            else:
-                origin_chain = self.process_origin(origin)
-                # the agent name is the last tool in the origin list
-                last_agent_name = origin[-1].get("tool")
-        else:
-            # This message is coming from an agent: get the agent name
-            origin = chat_message_dict.get("origin")
-            origin_chain = self.process_origin(origin)
-            # the agent name is the last tool in the origin list
-            last_agent_name = origin[-1].get("tool")
-        return origin_chain, last_agent_name
+        origin: List = chat_message_dict.get("origin")
+        # Convert the origin list to a string
+        origin_str = " -> ".join(tool['tool'] for tool in origin)
+        # the agent name is the last tool in the origin list
+        last_agent_name = origin[-1].get("tool")
 
-    @staticmethod
-    def process_origin(origin: List) -> str:
-        """
-        Convert the 'origin' list, that contains the name of the agents that lead to this message, into a string
-        """
-        if origin is None or len(origin) == 0:
-            return ""
-        # Extract tool names in order
-        sequence = " -> ".join(tool['tool'] for tool in origin)
-        return sequence
+        return origin_str, last_agent_name
 
     def display_message_in_ui(self, agent_name: str, message_log: str) -> None:
         """
