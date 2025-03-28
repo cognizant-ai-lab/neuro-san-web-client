@@ -1,4 +1,4 @@
 # Private repos: Neuro SAN and its dependencies
 git+https://${LEAF_SOURCE_CREDENTIALS}@github.com/leaf-ai/leaf-common.git@1.2.20
 git+https://${LEAF_PRIVATE_SOURCE_CREDENTIALS}@github.com/leaf-ai/leaf-server-common.git@0.1.17
-git+https://${LEAF_SOURCE_CREDENTIALS}@github.com/leaf-ai/neuro-san.git@0.5.6
+git+https://${LEAF_SOURCE_CREDENTIALS}@github.com/leaf-ai/neuro-san.git@0.5.8
