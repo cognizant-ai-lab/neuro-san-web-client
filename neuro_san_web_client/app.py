@@ -58,7 +58,6 @@ def index():
 @socketio.on('user_input')
 def handle_user_input(data):
     user_input = data.get('message')
-    sly_data = data.get('sly_data')
 
     # Get the Socket.IO session ID
     sid = request.sid
@@ -71,19 +70,28 @@ def handle_user_input(data):
             user_session = create_user_session(sid)
             user_sessions[sid] = user_session
 
-        input_processor = user_session['input_processor']
-        state = user_session['state']
+        input_processor = user_session["input_processor"]
+        state = user_session["state"]
+        # Keep track of the sly_data. input_processor will wipe it out.
+        sly_data = state["sly_data"]
         # Update user input in state
         state["user_input"] = user_input
-        state["sly_data"] = sly_data
 
         print("========== Processing user message ==========")
-        # Update the state
+        # Calling the processor updates the state
         state = input_processor.process_once(state)
-        user_session['state'] = state
-        last_chat_response = state.get("last_chat_response")
 
-        # Start a background task and pass necessary data
+        # If any additional sly_data is returned, update it in the state
+        returned_sly_data = state.get("returned_sly_data", None)
+        if returned_sly_data:
+            sly_data.update(returned_sly_data)
+        state["sly_data"] = sly_data
+
+        # This is now the users' new state
+        user_session['state'] = state
+
+        # Start a background task to display the agent's response
+        last_chat_response = state.get("last_chat_response")
         socketio.start_background_task(target=background_response_handler, chat_response=last_chat_response, sid=sid)
 
 
@@ -114,11 +122,16 @@ def create_user_session(sid):
     chat_filter: Dict[str, Any] = {
         "chat_filter_type": "MAXIMAL"
     }
+
+    # Initialize the state for the user session
     state: Dict[str, Any] = {
         "last_chat_response": None,
         "num_input": 0,
         "chat_filter": chat_filter,
+        "sly_data": {},
     }
+
+    # Create the user session
     user_session = {
         'input_processor': input_processor,
         'state': state
