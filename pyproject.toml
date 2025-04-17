@@ -13,6 +13,9 @@ authors = [
 description = "Web client demo interface for neuro-san"
 keywords = ["LLM", "langchain", "agent", "multi-agent"]
 readme = "README.md"
+# This license name comes from doc recommendation here
+# https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license
+license = "LicenseRef-CognizantAcademicSource"
 license = {file = "LICENSE.txt"}
 requires-python = ">=3.10"
 classifiers = [
@@ -26,9 +29,6 @@ classifiers = [
     "Development Status :: 3 - Alpha",
 
     "Intended Audience :: Developers",
-
-    # We still need to classify our academic license
-    # "License :: XXX :: XXX"
 ]
 # "dynamic" says we are going to get these project properties by dynamic means.
 # More on each below
@@ -52,5 +52,8 @@ exclude = ["tests*"]
 fallback_version = "0.0.1"
 
 [project.urls]
-Homepage = "https://github.com/leaf-ai/agent_network_web_client"
-Repository = "https://github.com/leaf-ai/agent_network_web_client"
+Homepage = "https://github.com/leaf-ai/neuro-san-web-client"
+Repository = "https://github.com/leaf-ai/neuro-san-web-client"
+Documentation = "https://github.com/leaf-ai/neuro-san-web-client#readme"
+# If we move issue tracking to github 
+# Issues = "https://github.com/leaf-ai/neuro-san-web-client/issues"
