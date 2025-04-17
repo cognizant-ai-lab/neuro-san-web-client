@@ -16,7 +16,7 @@ readme = "README.md"
 # This license name comes from doc recommendation here
 # https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license
 license = "LicenseRef-CognizantAcademicSource"
-license = {file = "LICENSE.txt"}
+license-files = ["LICENSE.txt"]
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
