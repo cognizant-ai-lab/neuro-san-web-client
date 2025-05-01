@@ -81,20 +81,12 @@ def handle_user_input(data):
 
         input_processor = user_session["input_processor"]
         state = user_session["state"]
-        # Keep track of the sly_data. input_processor will wipe it out.
-        sly_data = state["sly_data"]
         # Update user input in state
         state["user_input"] = user_input
 
         print("========== Processing user message ==========")
         # Calling the processor updates the state
         state = input_processor.process_once(state)
-
-        # If any additional sly_data is returned, update it in the state
-        returned_sly_data = state.get("returned_sly_data", None)
-        if returned_sly_data:
-            sly_data.update(returned_sly_data)
-        state["sly_data"] = sly_data
 
         # This is now the users' new state
         user_session['state'] = state
