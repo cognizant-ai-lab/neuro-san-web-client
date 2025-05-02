@@ -38,8 +38,9 @@ socketio = SocketIO(app, async_mode='eventlet')
 DEFAULT_CONFIG = {
     'server_host': 'localhost',
     'server_port': 30011,
+    'web_client_host': '0.0.0.0',
     'web_client_port': 5001,
-    'agent_name': 'telco_network_support',
+    'default_agent_name': 'telco_network_support',
     'thinking_file': '/tmp/agent_thinking.txt',
     'thinking_dir': '/tmp'
 }
@@ -51,14 +52,14 @@ def index():
         # Update configuration based on user input
         session['server_host'] = request.form.get('host', app.config.get('server_host'))
         session['server_port'] = int(request.form.get('port', app.config.get('server_port')))
-        session['agent_name'] = request.form.get('agent_name', app.config.get('agent_name'))
+        session['agent_name'] = request.form.get('agent_name', app.config.get('default_agent_name'))
         # Initialize agent session with new config
         session['agent_session'] = None
         # Redirect to the index page to avoid form resubmission messages on refresh
         return redirect(url_for('index'))
 
     return render_template('index.html',
-                           agent_name=session.get('agent_name', app.config['agent_name']),
+                           agent_name=session.get('agent_name', app.config.get('default_agent_name')),
                            host=session.get('server_host', app.config['server_host']),
                            port=session.get('server_port', app.config['server_port']))
 
@@ -99,7 +100,7 @@ def handle_user_input(data):
 def create_user_session(sid):
     host = session.get('server_host', app.config['server_host'])
     port = session.get('server_port', app.config['server_port'])
-    agent_name = session.get('agent_name', app.config['agent_name'])
+    agent_name = session.get('agent_name', app.config.get('default_agent_name'))
     agent_session = GrpcServiceAgentSession(
         host=host,
         port=port,
@@ -182,11 +183,14 @@ def parse_args():
     parser.add_argument('--server-port', type=int,
                         default=int(os.getenv("NEURO_SAN_SERVER_PORT", DEFAULT_CONFIG['server_port'])),
                         help="Port number for the Neuro SAN server")
+    parser.add_argument('--web-client-host', type=str,
+                        default=os.getenv("NEURO_SAN_WEB_CLIENT_HOST", DEFAULT_CONFIG['web_client_host']),
+                        help="Host for the web client")
     parser.add_argument('--web-client-port', type=int,
                         default=int(os.getenv("NEURO_SAN_WEB_CLIENT_PORT", DEFAULT_CONFIG['web_client_port'])),
                         help="Port number for the web client")
-    parser.add_argument('--agent-name', type=str,
-                        default=os.getenv("NEURO_SAN_AGENT_NAME", DEFAULT_CONFIG['agent_name']),
+    parser.add_argument('--default-agent-name', type=str,
+                        default=os.getenv("NEURO_SAN_DEFAULT_AGENT_NAME", DEFAULT_CONFIG['default_agent_name']),
                         help="Agent name for the session")
 
     args, _ = parser.parse_known_args()
@@ -199,8 +203,12 @@ def parse_args():
 if __name__ == '__main__':
     a_config = parse_args()
     # Store config in Flask app for later use
-    # Items can be accessed anywhere in Flask routes e.g. using app.config['agent_name']
+    # Items can be accessed anywhere in Flask routes e.g. using app.config['server_host']
     app.config.update(a_config)
     clear_thinking_file()
     # Start the app with the parsed configuration
-    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=a_config['web_client_port'])
+    socketio.run(app,
+                 debug=True,
+                 allow_unsafe_werkzeug=True,
+                 host=a_config["web_client_host"],
+                 port=a_config["web_client_port"])
