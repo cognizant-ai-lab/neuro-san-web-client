@@ -1,5 +1,5 @@
 # In-house dependencies
-neuro_san==0.5.23
+neuro_san>=0.5.23,<0.6
 
 # Flask
 Flask==3.1.0
