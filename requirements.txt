@@ -1,15 +1,15 @@
 # In-house dependencies
-neuro_san>=0.5.28,<0.6
+neuro_san>=0.6.13
 
 # Flask
-Flask==3.1.1
+Flask==3.1.2
 Flask-SocketIO==5.5.1
 
-pyOpenSSL==25.0.0
+pyOpenSSL==25.3.0
 PyJWT>=2.10.1
-hvac==1.1.0
+hvac==2.4.0
 
-eventlet==0.39.1  # or the latest version
+eventlet==0.40.4  # or the latest version
 
 # For the HTML diagram builder tool
 pyvis~=0.3.2
