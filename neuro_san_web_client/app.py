@@ -10,6 +10,7 @@
 import argparse
 import os
 import threading
+from pathlib import Path
 from typing import Any
 from typing import Dict
 
@@ -24,6 +25,7 @@ from neuro_san.client.agent_session_factory import AgentSessionFactory
 from neuro_san.client.streaming_input_processor import StreamingInputProcessor
 
 from neuro_san_web_client.agent_log_processor import AgentLogProcessor
+from neuro_san_web_client.agents_diagram_builder import DiagramBuilder
 
 # Initialize a lock
 user_sessions_lock = threading.Lock()
@@ -44,7 +46,11 @@ DEFAULT_CONFIG = {
     'thinking_file': '/tmp/agent_thinking.txt',
     'thinking_dir': '/tmp'
 }
-
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+PATH_TO_STATIC = os.path.join(ROOT_DIR, 'static')
+# Path to where the agent network hocon files live, e.g. the neuro-san-studio registries
+# Adjust to your local setup as needed
+PATH_TO_NEURO_SAN_REGISTRIES = os.path.join(ROOT_DIR, '../../neuro-san-studio/registries')
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -55,6 +61,14 @@ def index():
         session['agent_name'] = request.form.get('agent_name', app.config.get('default_agent_name'))
         # Initialize agent session with new config
         session['agent_session'] = None
+        # Generate the HTML diagram for that agent
+        diagram_builder = DiagramBuilder()
+        agent_hocon = f"{session['agent_name']}.hocon"
+        hocon_input_path = PATH_TO_NEURO_SAN_REGISTRIES / Path(agent_hocon)
+        agent_html = f"{session['agent_name']}.html"
+        html_output_path = PATH_TO_STATIC / Path(agent_html)
+        diagram_builder.create_agent_diagram_from_hocon(hocon_file=hocon_input_path,
+                                                        output_html=html_output_path)
         # Redirect to the index page to avoid form resubmission messages on refresh
         return redirect(url_for('index'))
 

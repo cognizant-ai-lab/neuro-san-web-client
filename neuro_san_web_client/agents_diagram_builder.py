@@ -166,9 +166,10 @@ class DiagramBuilder:
         with open(output_html, 'w') as file:
             file.write(html_content)
 
-    def create_agent_diagram_from_hocon(self, hocon_file, output_html):
+    def create_agent_diagram_from_hocon(self, hocon_file, output_html=None):
         # Load the HOCON configuration
-        agent_data = ConfigFactory.parse_file(hocon_file)
+        # Do not resolve substitutions like aaosa_instructions as the includes are relative to the hocon directory.
+        agent_data = ConfigFactory.parse_file(hocon_file, resolve=False)
 
         # Parse the agents and tools from the HOCON data
         agent_graph = self.parse_agent_definitions(agent_data)
@@ -186,8 +187,11 @@ class DiagramBuilder:
         cwd = os.getcwd()
         try:
             static_dir = os.path.dirname(output_html)
+            # Create the sub-directories if they do not exist
+            os.makedirs(static_dir, exist_ok=True)
+            # Go to the static directory to create the graph there
             os.chdir(static_dir)
-            self.create_interactive_agent_graph(agent_graph, output_html)
+            self.create_interactive_agent_graph(agent_graph, str(output_html))
         finally:
             os.chdir(cwd)
 
