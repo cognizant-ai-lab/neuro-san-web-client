@@ -20,9 +20,8 @@ from flask import request
 from flask import session
 from flask import url_for
 from flask_socketio import SocketIO
-
+from neuro_san.client.agent_session_factory import AgentSessionFactory
 from neuro_san.client.streaming_input_processor import StreamingInputProcessor
-from neuro_san.session.service_agent_session import GrpcServiceAgentSession
 
 from neuro_san_web_client.agent_log_processor import AgentLogProcessor
 
@@ -37,10 +36,11 @@ socketio = SocketIO(app, async_mode='eventlet')
 # Default configuration
 DEFAULT_CONFIG = {
     'server_host': 'localhost',
-    'server_port': 30011,
+    'server_port': 8080,
     'web_client_host': '0.0.0.0',
     'web_client_port': 5001,
-    'default_agent_name': 'telco_network_support',
+    'connect_timeout_in_seconds': 10,
+    'default_agent_name': 'industry/telco_network_support',
     'thinking_file': '/tmp/agent_thinking.txt',
     'thinking_dir': '/tmp'
 }
@@ -101,15 +101,17 @@ def create_user_session(sid):
     host = session.get('server_host', app.config['server_host'])
     port = session.get('server_port', app.config['server_port'])
     agent_name = session.get('agent_name', app.config.get('default_agent_name'))
-    agent_session = GrpcServiceAgentSession(
-        host=host,
-        port=port,
-        agent_name=agent_name
-    )
+    timeout = DEFAULT_CONFIG["connect_timeout_in_seconds"]
+    session_factory = AgentSessionFactory()
+    agent_session = session_factory.create_session(session_type="http",
+                                                   agent_name=agent_name,
+                                                   hostname=host,
+                                                   port=port,
+                                                   connect_timeout_in_seconds=timeout)
     input_processor = StreamingInputProcessor(default_input="",
-                                              thinking_file=DEFAULT_CONFIG['thinking_file'],
+                                              thinking_file=DEFAULT_CONFIG["thinking_file"],
                                               session=agent_session,
-                                              thinking_dir=DEFAULT_CONFIG['thinking_dir'])
+                                              thinking_dir=DEFAULT_CONFIG["thinking_dir"])
     # Add a processor to handle agent logs
     # and to highlight the agents that respond in the agent network diagram
     agent_log_processor = AgentLogProcessor(socketio, sid)
