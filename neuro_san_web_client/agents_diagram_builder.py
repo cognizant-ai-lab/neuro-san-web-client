@@ -166,9 +166,10 @@ class DiagramBuilder:
         with open(output_html, 'w') as file:
             file.write(html_content)
 
-    def create_agent_diagram_from_hocon(self, hocon_file, output_html):
+    def create_agent_diagram_from_hocon(self, hocon_file, output_html=None):
         # Load the HOCON configuration
-        agent_data = ConfigFactory.parse_file(hocon_file)
+        # Do not resolve substitutions like aaosa_instructions as the includes are relative to the hocon directory.
+        agent_data = ConfigFactory.parse_file(hocon_file, resolve=False)
 
         # Parse the agents and tools from the HOCON data
         agent_graph = self.parse_agent_definitions(agent_data)
@@ -181,13 +182,20 @@ class DiagramBuilder:
             output_html = str(PATH_TO_STATIC / Path(f"{file_name}.html"))
             print(f"Output file not specified. Saving to {output_html}")
 
-        # Creating the graph will also create the `lib` directory.
-        # Make sure it gets created in the **same** directory as the output_html file (e.g. the `static` directory).
+        # Ensure output_html is inside PATH_TO_STATIC and normalized to prevent path traversal.
+        abs_static_dir = os.path.abspath(PATH_TO_STATIC)
+        abs_output_html = os.path.abspath(os.path.normpath(str(output_html)))
+        if not abs_output_html.startswith(abs_static_dir + os.sep):
+            raise Exception(f"Invalid output path: {abs_output_html} is outside the static directory.")
+
         cwd = os.getcwd()
         try:
-            static_dir = os.path.dirname(output_html)
+            static_dir = os.path.dirname(abs_output_html)
+            # Create the sub-directories if they do not exist
+            os.makedirs(static_dir, exist_ok=True)
+            # Go to the static directory to create the graph there
             os.chdir(static_dir)
-            self.create_interactive_agent_graph(agent_graph, output_html)
+            self.create_interactive_agent_graph(agent_graph, str(abs_output_html))
         finally:
             os.chdir(cwd)
 
